@@ -1,6 +1,8 @@
 package controller;
 
 import constants.MenuConstants;
+import parser.RSSParser;
+import storage.RSSStorage;
 
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -19,7 +21,7 @@ public class MainController {
         help(null);
     }
 
-    public static void Main(String[] args) {
+    public static void main(String[] args) {
         String command = null;
         init();
         while (!MenuConstants.CMD_EXIT.equals(command)) {
@@ -38,9 +40,12 @@ public class MainController {
 
             switch (command) {
                 case MenuConstants.CMD_PARSE:
-                    parseURL(params);
+                    parseURL(new String[]{"topstories.xml"});
                     break;
 
+                case MenuConstants.CMD_PRINT:
+                    print();
+                    break;
                 default:
                     break;
             }
@@ -51,9 +56,14 @@ public class MainController {
         pw.println("Type help to see commands list.");
         pw.println("Type exit to exit application.");
         pw.println("Type parse URL to parse that URL.");
+        pw.println("Type print to print parsed feed from URL.");
     }
 
     private static void parseURL(String[] params) {
+        RSSParser.get().parse(params);
+    }
 
+    private static void print() {
+        RSSStorage.get().print();
     }
 }
