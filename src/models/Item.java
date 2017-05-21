@@ -37,6 +37,7 @@ public class Item {
           /*    convertedValue =   "\"" + title!=null?title:"" + "\",\"" + pubDate!=null?pubDate:"" + "\",\"" + author!=null?author:"" + "\",\"" +
                 lastUpdateDate!=null?author:"" + "\",\"" + description!=null?description:"" + "\",\"" + category!=null?category:"" + "\",\"" +
                 link!=null?link:"" + "\"";*/
+
         return convertedValue;
     }
 

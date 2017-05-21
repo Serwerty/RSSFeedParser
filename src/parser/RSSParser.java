@@ -3,10 +3,7 @@ package parser;
 
 import constants.RSSTags;
 import models.Item;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import storage.RSSStorage;
@@ -69,16 +66,7 @@ public class RSSParser {
     }
 
 
-    private String getCharacterDataFromElement(Element e) {
-        Node child = e.getFirstChild();
-        if (child instanceof org.w3c.dom.CharacterData) {
-            org.w3c.dom.CharacterData cd = (org.w3c.dom.CharacterData) child;
-            if (cd != null) {
-                return cd.getData();
-            }
-        }
-        return "";
-    }
+
 
     private List<Item> getItems(NodeList itemNodes) {
 
@@ -101,6 +89,7 @@ public class RSSParser {
     }
 
     private String getCharacterDataFromTag(Element element, String tag) {
+        //TODO: rename currentTag
         NodeList currentTag = element.getElementsByTagName(tag);
         if (currentTag != null) {
             for (int i = 0; i < currentTag.getLength(); i++) {
@@ -108,6 +97,17 @@ public class RSSParser {
                 if (line != null) {
                     return getCharacterDataFromElement(line);
                 }
+            }
+        }
+        return null;
+    }
+
+    private String getCharacterDataFromElement(Element element) {
+        Node child = element.getFirstChild();
+        if (child instanceof CharacterData) {
+            CharacterData characterData = (CharacterData) child;
+            if (characterData != null) {
+                return characterData.getData();
             }
         }
         return null;
