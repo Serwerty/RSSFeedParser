@@ -11,6 +11,8 @@ import util.Logger;
 
 import javax.xml.parsers.*;
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,20 +32,33 @@ public class RSSParser {
 
     public void parse(String[] url)
     {
+        URL link = null;
+        try {
+           link = new URL(url[0]);
+        }
+        catch (MalformedURLException exp)
+        {
+            Logger.get().addMessage("Can't parse link" + url[0]);
+        }
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            File xmlFile = new File(url[0]);
-            InputStream inputStream= new FileInputStream(xmlFile);
-            InputStreamReader inputReader = new InputStreamReader(inputStream,"UTF-8");
-            InputSource inputSource = new InputSource(inputReader);
-            inputSource.setEncoding("UTF-8");
-
+            InputStream inputStream;
+            if (link == null) {
+                File xmlFile = new File(url[0]);
+                inputStream = new FileInputStream(xmlFile);
+                InputStreamReader inputReader = new InputStreamReader(inputStream, "UTF-8");
+                InputSource inputSource = new InputSource(inputReader);
+                inputSource.setEncoding("UTF-8");
+            }
+            else {
+                inputStream = link.openStream();
+            }
             Document doc = builder.parse(inputStream);
 
             NodeList title = doc.getElementsByTagName(RSSTags.TITLE_TAG);
             RSSStorage.get().setRssTitle(getCharacterDataFromElement((Element)title.item(0)));
-            NodeList link = doc.getElementsByTagName(RSSTags.LINK_TAG);
-            RSSStorage.get().setRssLink(getCharacterDataFromElement((Element)title.item(0)));
+            NodeList rssLink = doc.getElementsByTagName(RSSTags.LINK_TAG);
+            RSSStorage.get().setRssLink(getCharacterDataFromElement((Element)rssLink.item(0)));
 
 
             NodeList nodes = doc.getElementsByTagName(RSSTags.ITEM_TAG);

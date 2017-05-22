@@ -40,7 +40,8 @@ public class MainController {
 
             switch (command) {
                 case MenuConstants.CMD_PARSE:
-                    parseURL(new String[]{"topstories.xml"});
+                   // parseURL(new String[]{"topstories.xml"});
+                    parseURL(params);
                     break;
 
                 case MenuConstants.CMD_PRINT:

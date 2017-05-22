@@ -2,10 +2,12 @@ package util;
 
 
 import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +16,8 @@ import java.util.List;
 public class Logger {
     private static Logger instance;
     private Logger() {
-
+        logList = new ArrayList<>();
+        logListProperty = new SimpleListProperty<>();
     }
 
     public static Logger get() {
