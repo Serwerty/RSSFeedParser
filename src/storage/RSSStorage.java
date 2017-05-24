@@ -11,6 +11,7 @@ import java.util.List;
 public class RSSStorage {
     private static RSSStorage instance;
     private RSSStorage() {
+        initStorage();
     }
 
     public static RSSStorage get() {
