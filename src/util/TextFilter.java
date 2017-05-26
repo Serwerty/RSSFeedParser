@@ -8,7 +8,7 @@ public class TextFilter {
     }
 
     private static TextFilter instance;
-
+    //test
     public static TextFilter get() {
         if (instance == null) {
             instance = new TextFilter();
