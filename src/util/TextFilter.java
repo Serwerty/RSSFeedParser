@@ -8,7 +8,7 @@ public class TextFilter {
     }
 
     private static TextFilter instance;
-    //test
+
     public static TextFilter get() {
         if (instance == null) {
             instance = new TextFilter();
@@ -17,8 +17,6 @@ public class TextFilter {
     }
 
     public String deleteRedundantSymbols(String input) {
-        input = input.replaceAll("\n", " ");
-        input = input.replaceAll("\t", " ");
         input = input.replaceAll("\\s+", " ");
         return input;
     }

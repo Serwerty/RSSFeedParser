@@ -30,7 +30,7 @@ public class RssUrl {
             url = new URL(stringLink);
             isValid = true;
         } catch (MalformedURLException exp) {
-
+            isValid = false;
         }
         this.lastUpdate = lastUpdate;
         this.updateRate = updateRate;
