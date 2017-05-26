@@ -5,6 +5,7 @@ package parser;
  */
 public class HTMLParser {
     private static HTMLParser instance;
+
     private HTMLParser() {
 
     }

@@ -4,7 +4,7 @@ package models;
  * Created by Олег on 21.05.2017.
  */
 public class Item {
-    public Item(){
+    public Item() {
 
     }
 
@@ -16,23 +16,23 @@ public class Item {
     private String category;
     private String link;
 
-    public String toString(){
-        
+    public String toString() {
+
         String convertedValue = "\"";
-        convertedValue+=title!=null?title:"";
-        convertedValue+="\"\t\"";
-        convertedValue+=pubDate!=null?pubDate:"";
-        convertedValue+="\"\t\"";
-        convertedValue+=author!=null?author:"";
-        convertedValue+="\"\t\"";
-        convertedValue+=lastUpdateDate!=null?lastUpdateDate:"";
-        convertedValue+="\"\t\"";
-        convertedValue+=description!=null?description:"";
-        convertedValue+="\"\t\"";
-        convertedValue+=category!=null?category:"";
-        convertedValue+="\"\t\"";
-        convertedValue+=link!=null?link:"";
-        convertedValue+="\"";
+        convertedValue += title != null ? title : "";
+        convertedValue += "\"\t\"";
+        convertedValue += pubDate != null ? pubDate : "";
+        convertedValue += "\"\t\"";
+        convertedValue += author != null ? author : "";
+        convertedValue += "\"\t\"";
+        convertedValue += lastUpdateDate != null ? lastUpdateDate : "";
+        convertedValue += "\"\t\"";
+        convertedValue += description != null ? description : "";
+        convertedValue += "\"\t\"";
+        convertedValue += category != null ? category : "";
+        convertedValue += "\"\t\"";
+        convertedValue += link != null ? link : "";
+        convertedValue += "\"";
 
           /*    convertedValue =   "\"" + title!=null?title:"" + "\",\"" + pubDate!=null?pubDate:"" + "\",\"" + author!=null?author:"" + "\",\"" +
                 lastUpdateDate!=null?author:"" + "\",\"" + description!=null?description:"" + "\",\"" + category!=null?category:"" + "\",\"" +

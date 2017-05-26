@@ -21,6 +21,7 @@ import java.util.List;
  */
 public class RSSParser {
     private static RSSParser instance;
+
     private RSSParser() {
     }
 
@@ -30,14 +31,11 @@ public class RSSParser {
         return instance;
     }
 
-    public void parse(String[] url)
-    {
+    public void parse(String[] url) {
         URL link = null;
         try {
-           link = new URL(url[0]);
-        }
-        catch (MalformedURLException exp)
-        {
+            link = new URL(url[0]);
+        } catch (MalformedURLException exp) {
             Logger.get().addMessage("Can't parse link" + url[0]);
         }
         try {
@@ -49,38 +47,29 @@ public class RSSParser {
                 InputStreamReader inputReader = new InputStreamReader(inputStream, "UTF-8");
                 InputSource inputSource = new InputSource(inputReader);
                 inputSource.setEncoding("UTF-8");
-            }
-            else {
+            } else {
                 inputStream = link.openStream();
             }
             Document doc = builder.parse(inputStream);
 
             NodeList title = doc.getElementsByTagName(RSSTags.TITLE_TAG);
-            RSSStorage.get().setRssTitle(getCharacterDataFromElement((Element)title.item(0)));
+            RSSStorage.get().setRssTitle(getCharacterDataFromElement((Element) title.item(0)));
             NodeList rssLink = doc.getElementsByTagName(RSSTags.LINK_TAG);
-            RSSStorage.get().setRssLink(getCharacterDataFromElement((Element)rssLink.item(0)));
+            RSSStorage.get().setRssLink(getCharacterDataFromElement((Element) rssLink.item(0)));
 
 
             NodeList nodes = doc.getElementsByTagName(RSSTags.ITEM_TAG);
             RSSStorage.get().setItemsList(getItems(nodes));
 
 
-        }
-        catch(ParserConfigurationException exp)
-        {
+        } catch (ParserConfigurationException exp) {
             Logger.get().addMessage("Error while configuring of the parser.");
-        }
-        catch(IOException exp )
-        {
+        } catch (IOException exp) {
             Logger.get().addMessage("Error while parsing url:" + url[0]);
-        }
-        catch(SAXException exp )
-        {
+        } catch (SAXException exp) {
             Logger.get().addMessage("SAX Error while parsing url:" + url[0]);
         }
     }
-
-
 
 
     private List<Item> getItems(NodeList itemNodes) {
@@ -88,7 +77,7 @@ public class RSSParser {
         List<Item> items = new ArrayList<>();
         for (int i = 0; i < itemNodes.getLength(); i++) {
             Item item = new Item();
-            Element element = (Element)itemNodes.item(i);
+            Element element = (Element) itemNodes.item(i);
 
             item.setTitle(getCharacterDataFromTag(element, RSSTags.TITLE_TAG));
             item.setAuthor(getCharacterDataFromTag(element, RSSTags.AUTHOR_TAG));
@@ -108,7 +97,7 @@ public class RSSParser {
         NodeList currentTag = element.getElementsByTagName(tag);
         if (currentTag != null) {
             for (int i = 0; i < currentTag.getLength(); i++) {
-                Element line = (Element)currentTag.item(i);
+                Element line = (Element) currentTag.item(i);
                 if (line != null) {
                     return getCharacterDataFromElement(line);
                 }

@@ -25,22 +25,19 @@ public class RssUrl {
         validateLink();
     }
 
-    private void validateLink()
-    {
+    private void validateLink() {
         try {
             url = new URL(stringLink);
             isValid = true;
-        }
-        catch (MalformedURLException exp)
-        {
+        } catch (MalformedURLException exp) {
 
         }
         this.lastUpdate = lastUpdate;
         this.updateRate = updateRate;
         File testFile = new File(stringLink);
-        if(testFile.exists() && !testFile.isDirectory()) {
+        if (testFile.exists() && !testFile.isDirectory()) {
             int indexOfDot = testFile.getName().lastIndexOf('.');
-            String fileExtension  = (indexOfDot == -1) ? "" : stringLink.substring(indexOfDot + 1);
+            String fileExtension = (indexOfDot == -1) ? "" : stringLink.substring(indexOfDot + 1);
             if (fileExtension.equals(XML_EXTENSION))
                 isValid = true;
         }

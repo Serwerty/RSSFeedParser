@@ -15,6 +15,7 @@ import java.util.List;
  */
 public class Logger {
     private static Logger instance;
+
     private Logger() {
         logList = new ArrayList<>();
         logListProperty = new SimpleListProperty<>();
@@ -26,7 +27,7 @@ public class Logger {
         return instance;
     }
 
-    private static DateTimeFormatter formatter  = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
     private ListProperty<String> logListProperty;
     private List<String> logList;
 

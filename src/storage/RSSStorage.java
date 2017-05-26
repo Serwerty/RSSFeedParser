@@ -10,6 +10,7 @@ import java.util.List;
  */
 public class RSSStorage {
     private static RSSStorage instance;
+
     private RSSStorage() {
         initStorage();
     }
@@ -72,8 +73,8 @@ public class RSSStorage {
     }
 
     public void print() {
-            for (Item item : itemsList) {
-                System.out.println(item.toString());
-            }
+        for (Item item : itemsList) {
+            System.out.println(item.toString());
+        }
     }
 }
