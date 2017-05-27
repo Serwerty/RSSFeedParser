@@ -23,7 +23,9 @@ public class MainController {
 
     public static void main(String[] args) {
         String command = null;
+
         init();
+
         while (!MenuConstants.CMD_EXIT.equals(command)) {
             String line = sc.nextLine();
             String[] words = line.split(" ");
@@ -47,6 +49,7 @@ public class MainController {
                 case MenuConstants.CMD_PRINT:
                     print();
                     break;
+
                 default:
                     break;
             }
@@ -62,6 +65,7 @@ public class MainController {
 
     private static void parseURL(String[] params) {
         RSSParser.get().parse(params);
+        RSSStorage.get().saveFile(RSSStorage.get().getRssTitle().split(" ")[0]);
     }
 
     private static void print() {

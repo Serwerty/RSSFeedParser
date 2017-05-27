@@ -54,9 +54,9 @@ public class RSSParser {
 
             NodeList title = doc.getElementsByTagName(RSSTags.TITLE_TAG);
             RSSStorage.get().setRssTitle(getCharacterDataFromElement((Element) title.item(0)));
+
             NodeList rssLink = doc.getElementsByTagName(RSSTags.LINK_TAG);
             RSSStorage.get().setRssLink(getCharacterDataFromElement((Element) rssLink.item(0)));
-
 
             NodeList nodes = doc.getElementsByTagName(RSSTags.ITEM_TAG);
             RSSStorage.get().setItemsList(getItems(nodes));

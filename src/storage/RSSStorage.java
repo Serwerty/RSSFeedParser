@@ -2,7 +2,14 @@ package storage;
 
 import models.Item;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,6 +34,7 @@ public class RSSStorage {
     private String rssLink;
 
     public void cleanUp() {
+
     }
 
     private void initStorage() {
@@ -69,7 +77,29 @@ public class RSSStorage {
     }
 
     public void saveFile(String fileName) {
+        Date dateNow = new Date();
 
+        SimpleDateFormat yearFormatter = new SimpleDateFormat("yyyy");
+        SimpleDateFormat monthFormatter = new SimpleDateFormat("MM");
+        SimpleDateFormat dayFormatter = new SimpleDateFormat("dd");
+
+
+        String yearDate = yearFormatter.format(dateNow);
+        String monthDate = monthFormatter.format(dateNow);
+        String dayDate = dayFormatter.format(dateNow);
+
+        try {
+            Path pathToFile = Paths.get(String.format("\\%s\\%s\\%s\\%s.csv", yearDate, monthDate, dayDate, fileName));
+            Files.createDirectories(pathToFile.getParent());
+            Files.createFile(pathToFile);
+            PrintWriter writer = new PrintWriter(String.format("\\%s\\%s\\%s\\%s.csv", yearDate, monthDate, dayDate, fileName), "UTF-8");
+            for (Item item : itemsList) {
+                writer.println(item.toString());
+            }
+            writer.close();
+        } catch (IOException e) {
+            util.Logger.get().addMessage("error while saving the file");
+        }
     }
 
     public void print() {
