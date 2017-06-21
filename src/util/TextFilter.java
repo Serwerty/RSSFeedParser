@@ -20,4 +20,10 @@ public class TextFilter {
         input = input.replaceAll("\\s+", " ");
         return input;
     }
+
+    public String prepareToSave(String input){
+        input = input.replaceAll("[^a-zA-Z0-9.-]", "_");
+        input =  input.replaceAll("_+", "_");
+        return input;
+    }
 }

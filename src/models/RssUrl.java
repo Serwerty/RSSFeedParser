@@ -1,5 +1,7 @@
 package models;
 
+import controller.RSSListController;
+import parser.RSSParser;
 import storage.RSSStorage;
 import util.Logger;
 
@@ -11,16 +13,22 @@ import java.util.Date;
 /**
  * Created by Олег on 24.05.2017.
  */
-public class RssUrl {
+public class RssUrl implements Runnable{
     private URL url;
     private String stringLink;
     private Boolean isValid;
-    private Boolean isParsed;
-    private String csvLink;
-    private Date lastUpdate;
     private short updateRate;
     private static final String XML_EXTENSION = "xml";
     private RSSStorage storage;
+    private int idInTaskList;
+
+    public int getIdInTaskList() {
+        return idInTaskList;
+    }
+
+    public void setIdInTaskList(int idInTaskList) {
+        this.idInTaskList = idInTaskList;
+    }
 
     public RssUrl(String stringLink, short updateRate) {
         storage = new RSSStorage();
@@ -42,8 +50,6 @@ public class RssUrl {
         } catch (MalformedURLException exp) {
             isValid = false;
         }
-        this.lastUpdate = lastUpdate;
-        this.updateRate = updateRate;
         File testFile = new File(stringLink);
         if (testFile.exists() && !testFile.isDirectory()) {
             int indexOfDot = testFile.getName().lastIndexOf('.');
@@ -78,10 +84,6 @@ public class RssUrl {
         return isValid;
     }
 
-    public Date getLastUpdate() {
-        return lastUpdate;
-    }
-
     public short getUpdateRate() {
         return updateRate;
     }
@@ -90,19 +92,20 @@ public class RssUrl {
         this.updateRate = updateRate;
     }
 
-    public Boolean getParsed() {
-        return isParsed;
+    public void setValid(Boolean valid) {
+        isValid = valid;
     }
 
-    public void setParsed(Boolean parsed) {
-        isParsed = parsed;
-    }
-
-    public String getCsvLink() {
-        return csvLink;
-    }
-
-    public void setCsvLink(String csvLink) {
-        this.csvLink = csvLink;
+    @Override
+    public void run() {
+        if (isValid) {
+            RSSParser.get().parse(this);
+        }
+        if (isValid){
+            storage.saveFile();
+        }
+        else {
+            Logger.get().addMessage("Error: rss is invalid");
+        }
     }
 }

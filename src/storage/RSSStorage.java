@@ -1,6 +1,9 @@
 package storage;
 
 import models.Item;
+import sun.rmi.runtime.Log;
+import util.Logger;
+import util.TextFilter;
 
 import java.io.File;
 import java.io.IOException;
@@ -88,19 +91,29 @@ public class RSSStorage {
         String yearDate = yearFormatter.format(dateNow);
         String monthDate = monthFormatter.format(dateNow);
         String dayDate = dayFormatter.format(dateNow);
-
+        if (rssTitle == null)
+            rssTitle = "Untitled";
         try {
-            File file = new File(String.format("csvStorage/%s/%s/%s/%s.csv", yearDate, monthDate, dayDate, rssTitle));
-           // Path pathToFile = Paths.get(String.format("\\%s\\%s\\%s\\%s.csv", yearDate, monthDate, dayDate, fileName));
-            //Files.createDirectories(pathToFile.getParent());
-          //  Files.createFile(pathToFile);
+            File file = new File(String.format("csvStorage/%s/%s/%s/%s.csv", yearDate, monthDate, dayDate,
+                    TextFilter.get().prepareToSave(rssTitle)));
+            Path pathToFile = Paths.get(String.format("csvStorage/%s/%s/%s/%s.csv", yearDate, monthDate, dayDate,
+                    TextFilter.get().prepareToSave(rssTitle)));
+            Files.createDirectories(pathToFile.getParent());
+            try {
+                boolean result = Files.deleteIfExists(file.toPath());
+                Logger.get().addMessage("Replacing file " + TextFilter.get().prepareToSave(rssTitle));
+            }
+            catch (IOException e) {
+            }
+            Files.createFile(pathToFile);
             PrintWriter writer = new PrintWriter(file, "UTF-8");
             for (Item item : itemsList) {
                 writer.println(item.toString());
             }
+            Logger.get().addMessage("File saved " + TextFilter.get().prepareToSave(rssTitle));
             writer.close();
         } catch (IOException e) {
-            util.Logger.get().addMessage("error while saving the file");
+            Logger.get().addMessage("Error while saving the file " + TextFilter.get().prepareToSave(rssTitle));
         }
     }
 

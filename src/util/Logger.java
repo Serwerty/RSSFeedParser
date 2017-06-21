@@ -1,14 +1,26 @@
 package util;
 
 
+
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
+import models.Item;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
 
 /**
  * Created by Олег on 21.05.2017.
@@ -38,5 +50,45 @@ public class Logger {
     public void addMessage(String messageToLog) {
         logList.add(LocalDateTime.now() + ": " + messageToLog);
         logListProperty.set(FXCollections.observableArrayList(logList));
+    }
+
+    public void printLog(PrintWriter pw) {
+        for (String line: logList) {
+            pw.println(line);
+        }
+    }
+
+    public void exportLog(){
+        Date dateNow = new Date();
+
+        SimpleDateFormat yearFormatter = new SimpleDateFormat("yyyy");
+        SimpleDateFormat monthFormatter = new SimpleDateFormat("MM");
+        SimpleDateFormat dayFormatter = new SimpleDateFormat("dd");
+
+
+        String yearDate = yearFormatter.format(dateNow);
+        String monthDate = monthFormatter.format(dateNow);
+        String dayDate = dayFormatter.format(dateNow);
+
+        try {
+            File file = new File(String.format("logs/%s/%s/%s/log.log", yearDate, monthDate, dayDate));
+            Path pathToFile = Paths.get(String.format("logs/%s/%s/%s/log.log", yearDate, monthDate, dayDate));
+            Files.createDirectories(pathToFile.getParent());
+            try {
+                boolean result = Files.deleteIfExists(file.toPath());
+                Logger.get().addMessage("Replacing log file " + "log");
+            }
+            catch (IOException e) {
+            }
+            Files.createFile(pathToFile);
+            PrintWriter writer = new PrintWriter(file, "UTF-8");
+            for (String line : logList) {
+                writer.println(line);
+            }
+            Logger.get().addMessage("Log saved");
+            writer.close();
+        } catch (IOException e) {
+            Logger.get().addMessage("Error while saving log");
+        }
     }
 }

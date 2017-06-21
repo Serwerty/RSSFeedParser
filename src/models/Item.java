@@ -17,7 +17,6 @@ public class Item {
     private String link;
 
     public String toString() {
-
         String convertedValue = "\"";
         convertedValue += title != null ? title : "";
         convertedValue += "\"\t\"";
@@ -33,11 +32,6 @@ public class Item {
         convertedValue += "\"\t\"";
         convertedValue += link != null ? link : "";
         convertedValue += "\"";
-
-          /*    convertedValue =   "\"" + title!=null?title:"" + "\",\"" + pubDate!=null?pubDate:"" + "\",\"" + author!=null?author:"" + "\",\"" +
-                lastUpdateDate!=null?author:"" + "\",\"" + description!=null?description:"" + "\",\"" + category!=null?category:"" + "\",\"" +
-                link!=null?link:"" + "\"";*/
-
         return convertedValue;
     }
 

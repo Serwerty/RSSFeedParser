@@ -1,6 +1,11 @@
 package controller;
 
+import util.TextFilter;
+
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Created by Олег on 21.06.2017.
@@ -39,6 +44,9 @@ public class ConfigController {
     public void saveConfig(){
         try {
             File file = new File("config/config.dat");
+            Path pathToFile = Paths.get("config/config.dat");
+            Files.createDirectories(pathToFile.getParent());
+            Files.createFile(pathToFile);
             PrintWriter writer = new PrintWriter(file);
             writer.println("autoSave:" + autoSave);
         } catch (IOException e) {

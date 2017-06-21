@@ -33,37 +33,41 @@ public class RSSParser {
     }
 
     public void parse(RssUrl rssUrl) {
-        try {
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            InputStream inputStream;
-            if (!rssUrl.getValid()) {
-                File xmlFile = new File(rssUrl.getStringLink());
-                inputStream = new FileInputStream(xmlFile);
-                InputStreamReader inputReader = new InputStreamReader(inputStream, "UTF-8");
-                InputSource inputSource = new InputSource(inputReader);
-                inputSource.setEncoding("UTF-8");
-            } else {
-                inputStream = rssUrl.getUrl().openStream();
+        if (rssUrl.getValid()) {
+            try {
+                DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                InputStream inputStream;
+                if (rssUrl.getUrl() == null) {
+                    File xmlFile = new File(rssUrl.getStringLink());
+                    inputStream = new FileInputStream(xmlFile);
+                    InputStreamReader inputReader = new InputStreamReader(inputStream, "UTF-8");
+                    InputSource inputSource = new InputSource(inputReader);
+                    inputSource.setEncoding("UTF-8");
+                } else {
+                    inputStream = rssUrl.getUrl().openStream();
+                }
+                Document doc = builder.parse(inputStream);
+
+                NodeList title = doc.getElementsByTagName(RSSTags.TITLE_TAG);
+                rssUrl.getStorage().setRssTitle(getCharacterDataFromElement((Element) title.item(0)));
+
+                NodeList rssLink = doc.getElementsByTagName(RSSTags.LINK_TAG);
+                rssUrl.getStorage().setRssLink(getCharacterDataFromElement((Element) rssLink.item(0)));
+
+                NodeList nodes = doc.getElementsByTagName(RSSTags.ITEM_TAG);
+                rssUrl.getStorage().setItemsList(getItems(nodes));
+
+
+            } catch (ParserConfigurationException exp) {
+                Logger.get().addMessage("Error while configuring of the parser.");
+            } catch (IOException exp) {
+                Logger.get().addMessage("Error while parsing url:" + rssUrl.getStringLink());
+            } catch (SAXException exp) {
+                rssUrl.setValid(false);
+                Logger.get().addMessage("SAX Error while parsing url:" + rssUrl.getStringLink());
             }
-            Document doc = builder.parse(inputStream);
-
-            NodeList title = doc.getElementsByTagName(RSSTags.TITLE_TAG);
-            rssUrl.getStorage().setRssTitle(getCharacterDataFromElement((Element) title.item(0)));
-
-            NodeList rssLink = doc.getElementsByTagName(RSSTags.LINK_TAG);
-            rssUrl.getStorage().setRssLink(getCharacterDataFromElement((Element) rssLink.item(0)));
-
-            NodeList nodes = doc.getElementsByTagName(RSSTags.ITEM_TAG);
-            rssUrl.getStorage().setItemsList(getItems(nodes));
-
-
-        } catch (ParserConfigurationException exp) {
-            Logger.get().addMessage("Error while configuring of the parser.");
-        } catch (IOException exp) {
-            Logger.get().addMessage("Error while parsing url:" + rssUrl.getStringLink());
-        } catch (SAXException exp) {
-            Logger.get().addMessage("SAX Error while parsing url:" + rssUrl.getStringLink());
         }
+        else Logger.get().addMessage("Error: rss is invalid");
     }
 
 
