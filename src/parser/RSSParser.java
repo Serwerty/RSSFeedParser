@@ -8,6 +8,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import storage.RSSStorage;
 import util.Logger;
+import util.TextFilter;
 
 import javax.xml.parsers.*;
 import java.io.*;
@@ -111,7 +112,7 @@ public class RSSParser {
         if (child instanceof CharacterData) {
             CharacterData characterData = (CharacterData) child;
             if (characterData != null) {
-                return characterData.getData();
+                return TextFilter.get().deleteRedundantSymbols(characterData.getData());
             }
         }
         return null;
