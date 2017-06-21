@@ -1,5 +1,6 @@
 package models;
 
+import storage.RSSStorage;
 import util.Logger;
 
 import java.io.File;
@@ -19,8 +20,17 @@ public class RssUrl {
     private Date lastUpdate;
     private short updateRate;
     private static final String XML_EXTENSION = "xml";
+    private RSSStorage storage;
 
-    public RssUrl(String stringLink, Date lastUpdate, short updateRate) {
+    public RssUrl(String stringLink, short updateRate) {
+        storage = new RSSStorage();
+        this.stringLink = stringLink;
+        this.updateRate = updateRate;
+        validateLink();
+    }
+
+    public RssUrl(String stringLink) {
+        storage = new RSSStorage();
         this.stringLink = stringLink;
         validateLink();
     }
@@ -41,6 +51,14 @@ public class RssUrl {
             if (fileExtension.equals(XML_EXTENSION))
                 isValid = true;
         }
+    }
+
+    public RSSStorage getStorage() {
+        return storage;
+    }
+
+    public void setStorage(RSSStorage storage) {
+        this.storage = storage;
     }
 
     public URL getUrl() {

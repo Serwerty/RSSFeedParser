@@ -1,6 +1,7 @@
 package controller;
 
 import constants.MenuConstants;
+import models.RssUrl;
 import parser.RSSParser;
 import storage.RSSStorage;
 
@@ -42,12 +43,12 @@ public class MainController {
 
             switch (command) {
                 case MenuConstants.CMD_PARSE:
-                    // parseURL(new String[]{"topstories.xml"});
+                    //parseURL(new String[]{"topstories.xml"});
                     parseURL(params);
                     break;
 
                 case MenuConstants.CMD_PRINT:
-                    print();
+                    //print();
                     break;
 
                 default:
@@ -64,11 +65,13 @@ public class MainController {
     }
 
     private static void parseURL(String[] params) {
-        RSSParser.get().parse(params);
-        RSSStorage.get().saveFile(RSSStorage.get().getRssTitle().split(" ")[0]);
+        RssUrl rssUrl = new RssUrl(params[0]);
+        RSSParser.get().parse(rssUrl);
+        print(rssUrl);
+        rssUrl.getStorage().saveFile();
     }
 
-    private static void print() {
-        RSSStorage.get().print();
+    private static void print(RssUrl rssUrl) {
+        rssUrl.getStorage().print();
     }
 }

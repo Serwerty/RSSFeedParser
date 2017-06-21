@@ -2,6 +2,7 @@ package storage;
 
 import models.Item;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -16,18 +17,18 @@ import java.util.List;
  * Created by Олег on 21.05.2017.
  */
 public class RSSStorage {
-    private static RSSStorage instance;
+   // private static RSSStorage instance;
 
-    private RSSStorage() {
+    public RSSStorage() {
         initStorage();
     }
 
-    public static RSSStorage get() {
+   /* public static RSSStorage get() {
         if (instance == null)
             instance = new RSSStorage();
         return instance;
     }
-
+*/
     private List<Item> itemsList;
     private String rssTitle;
     private String rssSource;
@@ -76,7 +77,7 @@ public class RSSStorage {
         this.rssLink = rssLink;
     }
 
-    public void saveFile(String fileName) {
+    public void saveFile() {
         Date dateNow = new Date();
 
         SimpleDateFormat yearFormatter = new SimpleDateFormat("yyyy");
@@ -89,10 +90,11 @@ public class RSSStorage {
         String dayDate = dayFormatter.format(dateNow);
 
         try {
-            Path pathToFile = Paths.get(String.format("\\%s\\%s\\%s\\%s.csv", yearDate, monthDate, dayDate, fileName));
-            Files.createDirectories(pathToFile.getParent());
-            Files.createFile(pathToFile);
-            PrintWriter writer = new PrintWriter(String.format("\\%s\\%s\\%s\\%s.csv", yearDate, monthDate, dayDate, fileName), "UTF-8");
+            File file = new File(String.format("csvStorage/%s/%s/%s/%s.csv", yearDate, monthDate, dayDate, rssTitle));
+           // Path pathToFile = Paths.get(String.format("\\%s\\%s\\%s\\%s.csv", yearDate, monthDate, dayDate, fileName));
+            //Files.createDirectories(pathToFile.getParent());
+          //  Files.createFile(pathToFile);
+            PrintWriter writer = new PrintWriter(file, "UTF-8");
             for (Item item : itemsList) {
                 writer.println(item.toString());
             }
