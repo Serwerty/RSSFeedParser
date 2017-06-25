@@ -49,6 +49,7 @@ public class ConfigController {
             Files.createFile(pathToFile);
             PrintWriter writer = new PrintWriter(file);
             writer.println("autoSave:" + autoSave);
+            writer.close();
         } catch (IOException e) {
             util.Logger.get().addMessage("error while saving config file");
         }

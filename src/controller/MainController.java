@@ -79,6 +79,18 @@ public class MainController {
                     viewList(params);
                     break;
 
+                case MenuConstants.CMD_IMPORT_LIST:
+                    importList();
+                    break;
+
+                case MenuConstants.CMD_EXPORT_LIST:
+                    exportList();
+                    break;
+
+                case MenuConstants.CMD_CLEAN_UP_LIST:
+                    exportList();
+                    break;
+
                 default:
                     break;
             }
@@ -177,9 +189,20 @@ public class MainController {
         }
     }
 
+    private static void exportList(){
+        RSSListController.get().exportList();
+    }
+
+    private static void importList(){
+        RSSListController.get().cleanUpList();
+        RSSListController.get().importList();
+    }
+
     private static void exportLog(){
         Logger.get().exportLog();
     }
+
+    private static void cleanUpList(){ RSSListController.get().cleanUpList();}
 
     private static void print(RssUrl rssUrl){
         rssUrl.getStorage().print();

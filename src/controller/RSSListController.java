@@ -2,8 +2,12 @@ package controller;
 
 import models.RssUrl;
 import util.Logger;
+import util.TextFilter;
 
-import java.io.PrintWriter;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 /**
@@ -28,13 +32,16 @@ public class RSSListController {
             int idInList = ScheduleController.get().addToSchedule(rssUrl, rssUrl.getUpdateRate());
             rssUrl.setIdInTaskList(idInList);
             rssArrayList.add(rssUrl);
-            Logger.get().addMessage("Rss Link added to the Task Scheduler" + idInList);
+            Logger.get().addMessage("Rss Link added to the Task Scheduler " + idInList);
     }
 
     public void printList(PrintWriter pw) {
         int id =0;
         for (RssUrl rssUrl:rssArrayList) {
-            pw.println(id + ": " + rssUrl.getUrl()!=null?rssUrl.getUrl():rssUrl.getStringLink() + " " + rssUrl.getUpdateRate());
+            String outLine = Integer.toString(id) + " ";
+            outLine += rssUrl.getUrl()!=null?rssUrl.getUrl():rssUrl.getStringLink();
+            outLine += " " + rssUrl.getUpdateRate();
+            pw.println(outLine);
             id++;
         }
     }
@@ -45,7 +52,7 @@ public class RSSListController {
             int idInList = ScheduleController.get().addToSchedule(rssUrl, rssUrl.getUpdateRate());
             rssUrl.setIdInTaskList(idInList);
             rssArrayList.set(id, rssUrl);
-            Logger.get().addMessage("Rss Link added to the Task Scheduler" + rssUrl.getUrl()!=null?rssUrl.getUrl().toString():rssUrl.getStringLink());
+            Logger.get().addMessage("Rss Link was edited" + rssUrl.getUrl()!=null?rssUrl.getUrl().toString():rssUrl.getStringLink());
         }
         catch (IndexOutOfBoundsException e) {
             Logger.get().addMessage("Error: index out of bounds");
@@ -59,6 +66,76 @@ public class RSSListController {
         }
         catch (IndexOutOfBoundsException e) {
             Logger.get().addMessage("Error: index out of bounds");
+        }
+    }
+
+    public void cleanUpList(){
+        for (RssUrl rssUrl: rssArrayList) {
+            ScheduleController.get().deleteAt(rssUrl.getIdInTaskList());
+        }
+        rssArrayList = new ArrayList<>();
+        Logger.get().addMessage("Rss list is cleaned up");
+    }
+
+    public int getId(RssUrl rssUrl){
+        return rssArrayList.indexOf(rssUrl);
+    }
+
+    public void exportList(){
+        try {
+            File file = new File("rssList/list.dat");
+            Path pathToFile = Paths.get("rssList/list.dat");
+            Files.createDirectories(pathToFile.getParent());
+
+              try {
+
+                    boolean result = Files.deleteIfExists(file.toPath());
+                    if (result) Logger.get().addMessage("Replacing rss list file");
+
+              }
+              catch (IOException e) {
+              }
+
+              Files.createFile(pathToFile);
+              PrintWriter writer = new PrintWriter(file, "UTF-8");
+              for (RssUrl rssUrl : rssArrayList) {
+                  String outLine = rssUrl.getStringLink()+" "+rssUrl.getUpdateRate();
+                writer.println(outLine);
+            }
+              Logger.get().addMessage("Rss list is exported");
+            writer.close();
+        } catch (IOException e) {
+            util.Logger.get().addMessage("error while saving rss list file");
+        }
+    }
+
+    public void importList(){
+        try {
+            File file = new File("rssList/list.dat");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String readLine = "";
+            while ((readLine = br.readLine()) != null) {
+                String[] words = readLine.split(" ");
+                try {
+                    short period = Short.valueOf(words[1]);
+                    RssUrl rssUrl = new RssUrl(words[0], period);
+                    if (rssUrl.getValid()) {
+                        RSSListController.get().addToList(rssUrl);
+                    }
+                    else {
+                        Logger.get().addMessage("Error: rss is invalid {"+rssUrl.getStringLink()+"}");
+                    }
+                    Logger.get().addMessage("Rss list is imported");
+                }
+                catch (ArrayIndexOutOfBoundsException e){
+                    Logger.get().addMessage("Error: bad format, link and period should be always separated by ':' ");
+                }
+                catch (NumberFormatException e){
+                    Logger.get().addMessage("Error: NaN:period");
+                }
+            }
+        } catch (IOException e) {
+            util.Logger.get().addMessage("error while reading rss list file");
         }
     }
 }

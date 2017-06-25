@@ -2,6 +2,7 @@ package parser;
 
 
 import constants.RSSTags;
+import controller.RSSListController;
 import models.Item;
 import models.RssUrl;
 import org.w3c.dom.*;
@@ -65,6 +66,7 @@ public class RSSParser {
             } catch (SAXException exp) {
                 rssUrl.setValid(false);
                 Logger.get().addMessage("SAX Error while parsing url:" + rssUrl.getStringLink());
+                RSSListController.get().deletelistAt(RSSListController.get().getId(rssUrl));
             }
         }
         else Logger.get().addMessage("Error: rss is invalid");
