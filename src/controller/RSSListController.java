@@ -37,15 +37,16 @@ public class RSSListController {
 
     public void printList(PrintWriter pw) {
         int id =0;
-        for (RssUrl rssUrl:rssArrayList) {
-            String outLine = Integer.toString(id) + " ";
-            outLine += rssUrl.getUrl()!=null?rssUrl.getUrl():rssUrl.getStringLink();
-            outLine += " " + rssUrl.getUpdateRate();
-            pw.println(outLine);
-            id++;
+        if(!rssArrayList.isEmpty()) {
+            for (RssUrl rssUrl : rssArrayList) {
+                String outLine = Integer.toString(id) + " ";
+                outLine += rssUrl.getUrl() != null ? rssUrl.getUrl() : rssUrl.getStringLink();
+                outLine += " " + rssUrl.getUpdateRate();
+                pw.println(outLine);
+                id++;
+            }
         }
-        else
-        {
+        else{
             pw.println("RSS list is empty.");
         }
     }
