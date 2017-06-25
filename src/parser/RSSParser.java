@@ -3,6 +3,7 @@ package parser;
 
 import constants.RSSTags;
 import controller.RSSListController;
+import controller.StatisticController;
 import models.Item;
 import models.RssUrl;
 import org.w3c.dom.*;
@@ -57,19 +58,25 @@ public class RSSParser {
 
                 NodeList nodes = doc.getElementsByTagName(RSSTags.ITEM_TAG);
                 rssUrl.getStorage().setItemsList(getItems(nodes));
-
+                StatisticController.get().incrementLinkParsedField();
 
             } catch (ParserConfigurationException exp) {
                 Logger.get().addMessage("Error while configuring of the parser.");
+                StatisticController.get().incrementErrorsOccurredField();
             } catch (IOException exp) {
                 Logger.get().addMessage("Error while parsing url:" + rssUrl.getStringLink());
+                StatisticController.get().incrementErrorsOccurredField();
             } catch (SAXException exp) {
                 rssUrl.setValid(false);
                 Logger.get().addMessage("SAX Error while parsing url:" + rssUrl.getStringLink());
+                StatisticController.get().incrementErrorsOccurredField();
                 RSSListController.get().deletelistAt(RSSListController.get().getId(rssUrl));
             }
         }
-        else Logger.get().addMessage("Error: rss is invalid");
+        else {
+            Logger.get().addMessage("Error: rss is invalid");
+            StatisticController.get().incrementErrorsOccurredField();
+        }
     }
 
 
@@ -89,6 +96,7 @@ public class RSSParser {
             item.setLink(getCharacterDataFromTag(element, RSSTags.LINK_TAG));
 
             items.add(item);
+            StatisticController.get().incrementItemsCollectedField();
         }
         return items;
     }

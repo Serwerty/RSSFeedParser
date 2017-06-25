@@ -1,6 +1,7 @@
 package models;
 
 import controller.RSSListController;
+import controller.StatisticController;
 import parser.RSSParser;
 import storage.RSSStorage;
 import util.Logger;
@@ -106,6 +107,7 @@ public class RssUrl implements Runnable{
         }
         else {
             Logger.get().addMessage("Error: rss is invalid");
+            StatisticController.get().incrementErrorsOccurredField();
         }
     }
 }

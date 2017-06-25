@@ -130,14 +130,17 @@ public class MainController {
                 }
                 else {
                     Logger.get().addMessage("Error: rss is invalid");
+                    StatisticController.get().incrementErrorsOccurredField();
                 }
             }
             else {
                 Logger.get().addMessage("Error: rss is invalid");
+                StatisticController.get().incrementErrorsOccurredField();
             }
         }
        catch (ArrayIndexOutOfBoundsException e){
-            Logger.get().addMessage("Error: you also need to specify name");
+           Logger.get().addMessage("Error: you also need to specify name");
+           StatisticController.get().incrementErrorsOccurredField();
         }
     }
 
@@ -154,13 +157,16 @@ public class MainController {
             }
             else {
                 Logger.get().addMessage("Error: rss is invalid");
+                StatisticController.get().incrementErrorsOccurredField();
             }
         }
         catch (ArrayIndexOutOfBoundsException e){
             Logger.get().addMessage("Error: you also need to specify name and period of time");
+            StatisticController.get().incrementErrorsOccurredField();
         }
         catch (NumberFormatException e){
             Logger.get().addMessage("Error: NaN:period");
+            StatisticController.get().incrementErrorsOccurredField();
         }
     }
 
@@ -178,13 +184,16 @@ public class MainController {
             }
             else {
                 Logger.get().addMessage("Error: rss is invalid");
+                StatisticController.get().incrementErrorsOccurredField();
             }
         }
         catch (ArrayIndexOutOfBoundsException e){
             Logger.get().addMessage("Error: you also need to specify id, name and period of time");
+            StatisticController.get().incrementErrorsOccurredField();
         }
         catch (NumberFormatException e){
             Logger.get().addMessage("Error: NaN:period");
+            StatisticController.get().incrementErrorsOccurredField();
         }
     }
 
@@ -195,6 +204,7 @@ public class MainController {
         }
         catch (ArrayIndexOutOfBoundsException e){
             Logger.get().addMessage("Error: you need to specify id");
+            StatisticController.get().incrementErrorsOccurredField();
         }
     }
 

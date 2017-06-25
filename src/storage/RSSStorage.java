@@ -1,5 +1,6 @@
 package storage;
 
+import controller.StatisticController;
 import models.Item;
 import sun.rmi.runtime.Log;
 import util.Logger;
@@ -102,6 +103,7 @@ public class RSSStorage {
 
         } catch (IOException e) {
             Logger.get().addMessage("Error while saving the file " + TextFilter.get().prepareToSave(rssTitle));
+            StatisticController.get().incrementErrorsOccurredField();
         }
         return file;
     }
@@ -162,6 +164,7 @@ public class RSSStorage {
             writer.close();
         } catch (IOException e) {
             Logger.get().addMessage("Error while saving the file " + TextFilter.get().prepareToSave(rssTitle));
+            StatisticController.get().incrementErrorsOccurredField();
         }
     }
 

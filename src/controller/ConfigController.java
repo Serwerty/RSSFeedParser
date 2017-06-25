@@ -57,6 +57,7 @@ public class ConfigController {
             }
         } catch (IOException e) {
             util.Logger.get().addMessage("error while reading config file");
+            StatisticController.get().incrementErrorsOccurredField();
         }
     }
 

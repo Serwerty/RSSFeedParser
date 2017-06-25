@@ -75,6 +75,7 @@ public class RSSListController {
         }
         catch (IndexOutOfBoundsException e) {
             Logger.get().addMessage("Error: index out of bounds");
+            StatisticController.get().incrementErrorsOccurredField();
         }
     }
 
@@ -85,6 +86,7 @@ public class RSSListController {
         }
         catch (IndexOutOfBoundsException e) {
             Logger.get().addMessage("Error: index out of bounds");
+            StatisticController.get().incrementErrorsOccurredField();
         }
     }
 
@@ -125,6 +127,7 @@ public class RSSListController {
             writer.close();
         } catch (IOException e) {
             util.Logger.get().addMessage("error while saving rss list file");
+            StatisticController.get().incrementErrorsOccurredField();
         }
     }
 
@@ -143,18 +146,22 @@ public class RSSListController {
                     }
                     else {
                         Logger.get().addMessage("Error: rss is invalid {"+rssUrl.getStringLink()+"}");
+                        StatisticController.get().incrementErrorsOccurredField();
                     }
                     Logger.get().addMessage("Rss list is imported");
                 }
                 catch (ArrayIndexOutOfBoundsException e){
                     Logger.get().addMessage("Error: bad format, link and period should be always separated by ':' ");
+                    StatisticController.get().incrementErrorsOccurredField();
                 }
                 catch (NumberFormatException e){
                     Logger.get().addMessage("Error: NaN:period");
+                    StatisticController.get().incrementErrorsOccurredField();
                 }
             }
         } catch (IOException e) {
             util.Logger.get().addMessage("error while reading rss list file");
+            StatisticController.get().incrementErrorsOccurredField();
         }
     }
 }
