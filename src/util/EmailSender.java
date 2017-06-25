@@ -5,6 +5,8 @@ import java.util.Properties;
 
 import constants.EmailConstants;
 import constants.EmailType;
+import controller.ConfigController;
+import controller.StatisticController;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -54,7 +56,7 @@ public class EmailSender {
 
         Message message = new MimeMessage(session);
         try {
-            InternetAddress[] address = {new InternetAddress(EmailConstants.EMAIL_DEFAULT_RECIPIENT)};
+            InternetAddress[] address = {new InternetAddress(ConfigController.get().getRecipientEmail())};
             message.setRecipients(Message.RecipientType.TO, address);
             switch (emailType){
                 case Error:
@@ -108,5 +110,21 @@ public class EmailSender {
     public void SendEmail(EmailType emailType, String text, String pathToFile){
         String[] attachments = {pathToFile};
         SendEmail(emailType, text, attachments);
+    }
+
+    public String createStatisticsBodyText()
+    {
+        String statText = String.format("Result statistics:" +
+                "\nTotal news processed (updated and added): %s" +
+                "\nTotal links parsed: %s" +
+                "\nTotal errors occurred: %s" +
+                "\nApplication working time: %s",
+                StatisticController.get().getItemsCollected(),
+                StatisticController.get().getLinksParsed(),
+                StatisticController.get().getErrorsOccurred(),
+                StatisticController.get().getWorkingTime());
+        String bodyText = String.format("RSS Feed Parser finished.\n\n%s.\n\nLog file is attached." +
+                "\n\nThanks for using our application!", statText);
+        return bodyText;
     }
 }

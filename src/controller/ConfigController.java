@@ -1,5 +1,6 @@
 package controller;
 
+import constants.EmailConstants;
 import util.TextFilter;
 
 import java.io.*;
@@ -24,7 +25,7 @@ public class ConfigController {
     }
 
     private boolean showLogByLine = true;
-    private String recipientEmail = "kateryna.liman@gmail.com";
+    private String recipientEmail = EmailConstants.EMAIL_DEFAULT_RECIPIENT;
     private TimeUnit timeUnit = TimeUnit.SECONDS;
     private short periodOfTime = 15;
 
