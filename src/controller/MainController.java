@@ -21,6 +21,8 @@ public class MainController {
         sc = new Scanner(System.in);
         pw = new PrintWriter(System.out, true);
         Logger.init(pw);
+        ConfigController.get().loadConfig();
+        StatisticController.get().Init();
         pw.println("============= RSS Feed Parser =============");
         help(null);
     }
