@@ -20,6 +20,7 @@ public class MainController {
     private static void init() {
         sc = new Scanner(System.in);
         pw = new PrintWriter(System.out, true);
+        Logger.init(pw);
         pw.println("============= RSS Feed Parser =============");
         help(null);
     }
@@ -51,10 +52,6 @@ public class MainController {
 
                 case MenuConstants.CMD_HELP:
                     help(params);
-                    break;
-
-                case MenuConstants.CMD_PRINT:
-                    //print();
                     break;
 
                 case  MenuConstants.CMD_VIEW_LOG:

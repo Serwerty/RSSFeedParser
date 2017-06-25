@@ -2,6 +2,7 @@ package util;
 
 
 
+import controller.ConfigController;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -27,6 +28,7 @@ import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
  */
 public class Logger {
     private static Logger instance;
+    private static PrintWriter writer;
 
     private Logger() {
         logList = new ArrayList<>();
@@ -39,6 +41,10 @@ public class Logger {
         return instance;
     }
 
+    public static void init(PrintWriter pw){
+        writer = pw;
+    }
+
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
     private ListProperty<String> logListProperty;
     private List<String> logList;
@@ -48,8 +54,13 @@ public class Logger {
     }
 
     public void addMessage(String messageToLog) {
-        logList.add(LocalDateTime.now() + ": " + messageToLog);
+        String lineToAdd = LocalDateTime.now() + ": " + messageToLog;
+        logList.add(lineToAdd);
         logListProperty.set(FXCollections.observableArrayList(logList));
+        if (ConfigController.get().isShowLogByLine()){
+            writer.println(lineToAdd);
+        }
+
     }
 
     public void printLog(PrintWriter pw) {

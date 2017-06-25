@@ -22,8 +22,11 @@ public class ConfigController {
         return instance;
     }
 
-    private boolean autoSave = true;
+    private boolean showLogByLine = true;
 
+    public boolean isShowLogByLine() {
+        return showLogByLine;
+    }
 
     public void loadConfig() {
         try {
@@ -32,7 +35,7 @@ public class ConfigController {
             String readLine = "";
             while ((readLine = br.readLine()) != null) {
                 String[] words = readLine.split(":");
-                if ("autoSave".equals(words[0])) autoSave = Boolean.valueOf(words[1]);
+                if ("showLogByLine".equals(words[0])) showLogByLine = Boolean.valueOf(words[1]);
             }
         } catch (IOException e) {
             util.Logger.get().addMessage("error while reading config file");
@@ -48,7 +51,7 @@ public class ConfigController {
             Files.createDirectories(pathToFile.getParent());
             Files.createFile(pathToFile);
             PrintWriter writer = new PrintWriter(file);
-            writer.println("autoSave:" + autoSave);
+            writer.println("showLogByLine:" + showLogByLine);
             writer.close();
         } catch (IOException e) {
             util.Logger.get().addMessage("error while saving config file");
