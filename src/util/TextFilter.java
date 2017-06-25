@@ -26,4 +26,13 @@ public class TextFilter {
         input =  input.replaceAll("_+", "_");
         return input;
     }
+
+    public String prepareTime(Long input){
+        long timeInSec = input;
+        long hours = timeInSec/60/60;
+        long minutes = (timeInSec - hours*60*60)/60;
+        return Long.toString(hours) + "h " +
+                Long.toString(minutes) + "m " +
+                Long.toString(timeInSec - hours*60*60 - minutes*60 ) + "s ";
+    }
 }

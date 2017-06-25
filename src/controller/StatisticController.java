@@ -1,5 +1,7 @@
 package controller;
 
+import util.TextFilter;
+
 /**
  * Created by Олег on 25.06.2017.
  */
@@ -45,11 +47,7 @@ public class StatisticController {
     public String getWorkingTime(){
         long curTime = getCurrentTime();
         long timeInSec = (curTime - startTime)/1000000000;
-        long hours = timeInSec/60/60;
-        long minutes = (timeInSec - hours*60*60)/60;
-        return Long.toString(hours) + "h " +
-                Long.toString(minutes) + "m " +
-                Long.toString(timeInSec - hours*60*60 - minutes*60 ) + "s ";
+        return TextFilter.get().prepareTime(timeInSec);
     }
 
     public void Init(){
