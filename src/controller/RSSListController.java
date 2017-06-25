@@ -29,10 +29,24 @@ public class RSSListController {
     private ArrayList<RssUrl> rssArrayList;
 
     public void addToList(RssUrl rssUrl) {
+        if (!rssArrayList.contains(rssUrl) && !containsLink(rssUrl)) {
             int idInList = ScheduleController.get().addToSchedule(rssUrl, rssUrl.getUpdateRate());
             rssUrl.setIdInTaskList(idInList);
             rssArrayList.add(rssUrl);
             Logger.get().addMessage("Rss Link added to the Task Scheduler " + idInList);
+        }
+        else{
+            Logger.get().addMessage("Rss Link is already in list");
+        }
+    }
+
+    private boolean containsLink(RssUrl rssUrl){
+       boolean contains = false;
+        for (RssUrl rssUrlInList: rssArrayList) {
+             if (rssUrlInList.getStringLink().equals(rssUrl.getStringLink()))
+                 contains = true;
+        }
+       return contains;
     }
 
     public void printList(PrintWriter pw) {
