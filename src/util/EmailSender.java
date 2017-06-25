@@ -1,5 +1,7 @@
 package util;
 
+import java.util.*;
+
 import constants.EmailConstants;
 import constants.EmailType;
 import controller.ConfigController;
@@ -44,7 +46,8 @@ public class EmailSender {
         return instance;
     }
 
-    public void SendEmail(EmailType emailType, String text, String[] attachments) {
+    public void sendEmail (EmailType emailType, String text, String[] attachments)
+    {
         props.put(EmailConstants.KEY_HOST, EmailConstants.VAL_HOST);
         props.put(EmailConstants.KEY_PORT, EmailConstants.VAL_PORT);
         props.put(EmailConstants.KEY_SSL, true);
@@ -98,14 +101,15 @@ public class EmailSender {
         }
     }
 
-    public void SendEmail(EmailType emailType, String text) {
+    public void sendEmail(EmailType emailType, String text)
+    {
         String[] attachments = {};
-        SendEmail(emailType, text, attachments);
+        sendEmail(emailType, text, attachments);
     }
 
-    public void SendEmail(EmailType emailType, String text, String pathToFile) {
+    public void sendEmail(EmailType emailType, String text, String pathToFile){
         String[] attachments = {pathToFile};
-        SendEmail(emailType, text, attachments);
+        sendEmail(emailType, text, attachments);
     }
 
     public String createStatisticsBodyText() {
@@ -121,5 +125,31 @@ public class EmailSender {
         String bodyText = String.format("RSS Feed Parser finished.\n\n%s.\n\nLog file is attached." +
                 "\n\nThanks for using our application!", statText);
         return bodyText;
+    }
+
+    public void sendStatistics()
+    {
+        Logger.get().exportLog();
+        String logfileName = Logger.get().getLogFileName();
+        String bodyText = EmailSender.get().createStatisticsBodyText();
+        sendEmail(EmailType.Statistics, bodyText, logfileName);
+    }
+
+    public void initDailyTimer()
+    {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, ConfigController.get().getDailyHours());
+        calendar.set(Calendar.MINUTE, ConfigController.get().getDailyMinutes());
+
+        Date alarmTime = calendar.getTime();
+
+        Timer _timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                sendStatistics();
+            }
+        };
+        _timer.schedule(task, alarmTime);
     }
 }

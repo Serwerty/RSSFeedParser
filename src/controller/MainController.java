@@ -27,6 +27,7 @@ public class MainController {
         Logger.init(pw);
         ConfigController.get().loadConfig();
         StatisticController.get().Init();
+        EmailSender.get().initDailyTimer();
         pw.println("============= RSS Feed Parser =============");
         help(null);
     }
@@ -103,15 +104,8 @@ public class MainController {
             }
         }
         Logger.get().exportLog("logT" + TextFilter.get().prepareToSave(LocalDateTime.now().format(formatter)));
-        finalStep();
+        EmailSender.get().sendStatistics();
         System.exit(0);
-    }
-
-    private static void finalStep() {
-        Logger.get().exportLog();
-        String logfileName = Logger.get().getLogFileName();
-        String bodyText = EmailSender.get().createStatisticsBodyText();
-        EmailSender.get().SendEmail(EmailType.Statistics, bodyText, logfileName);
     }
 
     private static void help(String[] params) {
@@ -144,13 +138,13 @@ public class MainController {
                     Logger.get().addMessage("Error: rss is invalid");
                     StatisticController.get().incrementErrorsOccurredField();
                     String text = "Error: rss \"" + params[0].toString() + "\" is invalid.";
-                    EmailSender.get().SendEmail(EmailType.Error, text);
+                    EmailSender.get().sendEmail(EmailType.Error, text);
                 }
             } else {
                 Logger.get().addMessage("Error: rss is invalid");
                 StatisticController.get().incrementErrorsOccurredField();
                 String text = "Error: rss \"" + params[0].toString() + "\" is invalid.";
-                EmailSender.get().SendEmail(EmailType.Error, text);
+                EmailSender.get().sendEmail(EmailType.Error, text);
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             Logger.get().addMessage("Error: you also need to specify name");
@@ -194,7 +188,7 @@ public class MainController {
     }
 
     private static void sendEmail(String[] params) {
-        util.EmailSender.get().SendEmail(EmailType.Dafault, "Default text");
+        util.EmailSender.get().sendEmail(EmailType.Dafault, "Default text");
     }
 
     private static void viewList(String[] params) {
