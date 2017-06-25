@@ -99,8 +99,9 @@ public class RSSStorage {
             file = new File(fileName);
             Path pathToFile = Paths.get(fileName);
             Files.createDirectories(pathToFile.getParent());
+            boolean result = Files.deleteIfExists(file.toPath());
+            if (result) Logger.get().addMessage("Replacing rss list file");
             Files.createFile(pathToFile);
-
         } catch (IOException e) {
             Logger.get().addMessage("Error while saving the file " + TextFilter.get().prepareToSave(rssTitle));
             StatisticController.get().incrementErrorsOccurredField();

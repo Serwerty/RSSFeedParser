@@ -105,7 +105,16 @@ public class MainController {
             }
         }
         Logger.get().exportLog("logT" + TextFilter.get().prepareToSave(LocalDateTime.now().format(formatter)));
+        finalStep();
         System.exit(0);
+    }
+
+    private static void finalStep()
+    {
+        Logger.get().exportLog();
+        String logfileName = Logger.get().getLogFileName();
+        String bodyText = EmailSender.get().createStatisticsBodyText();
+        EmailSender.get().SendEmail(EmailType.Statistics, bodyText, logfileName);
     }
 
     private static void help(String[] params) {

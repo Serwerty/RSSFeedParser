@@ -69,7 +69,8 @@ public class Logger {
         }
     }
 
-    public void exportLog(){
+    public String getLogFileName()
+    {
         Date dateNow = new Date();
 
         SimpleDateFormat yearFormatter = new SimpleDateFormat("yyyy");
@@ -81,9 +82,16 @@ public class Logger {
         String monthDate = monthFormatter.format(dateNow);
         String dayDate = dayFormatter.format(dateNow);
 
+        String logFileName = String.format("logs/%s/%s/%s/log.log", yearDate, monthDate, dayDate);
+        return logFileName;
+    }
+
+    public void exportLog(){
+        String logFileName = getLogFileName();
+
         try {
-            File file = new File(String.format("logs/%s/%s/%s/log.log", yearDate, monthDate, dayDate));
-            Path pathToFile = Paths.get(String.format("logs/%s/%s/%s/log.log", yearDate, monthDate, dayDate));
+            File file = new File(logFileName);
+            Path pathToFile = Paths.get(logFileName);
             Files.createDirectories(pathToFile.getParent());
             try {
                 boolean result = Files.deleteIfExists(file.toPath());
