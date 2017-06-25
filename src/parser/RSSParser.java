@@ -1,6 +1,7 @@
 package parser;
 
 
+import constants.EmailType;
 import constants.RSSTags;
 import controller.RSSListController;
 import controller.StatisticController;
@@ -9,6 +10,7 @@ import models.RssUrl;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import util.EmailSender;
 import util.Logger;
 import util.TextFilter;
 
@@ -61,21 +63,30 @@ public class RSSParser {
                 StatisticController.get().incrementLinkParsedField();
 
             } catch (ParserConfigurationException exp) {
-                Logger.get().addMessage("Error while configuring of the parser.");
+                String text = "Error while configuring of the parser.";
+                Logger.get().addMessage(text);
+                EmailSender.get().SendEmail(EmailType.Error, text);
                 StatisticController.get().incrementErrorsOccurredField();
             } catch (IOException exp) {
-                Logger.get().addMessage("Error while parsing url:" + rssUrl.getStringLink());
+                String text = "Error while parsing url:" + rssUrl.getStringLink();
+                Logger.get().addMessage(text);
+                EmailSender.get().SendEmail(EmailType.Error, text);
                 StatisticController.get().incrementErrorsOccurredField();
             } catch (SAXException exp) {
                 rssUrl.setValid(false);
-                Logger.get().addMessage("SAX Error while parsing url:" + rssUrl.getStringLink());
+                String text = "SAX Error while parsing url:" + rssUrl.getStringLink();
+                Logger.get().addMessage(text);
+                EmailSender.get().SendEmail(EmailType.Error, text);
                 StatisticController.get().incrementErrorsOccurredField();
                 RSSListController.get().deletelistAt(RSSListController.get().getId(rssUrl));
             }
         }
-        else {
+        else
+        {
             Logger.get().addMessage("Error: rss is invalid");
+            String text = "Error: rss is invalid:" + rssUrl.getStringLink();
             StatisticController.get().incrementErrorsOccurredField();
+            EmailSender.get().SendEmail(EmailType.Error, text);
         }
     }
 

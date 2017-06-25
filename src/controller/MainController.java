@@ -1,9 +1,11 @@
 package controller;
 
+import constants.EmailType;
 import constants.MenuConstants;
 import models.RssUrl;
 import parser.RSSParser;
 import storage.RSSStorage;
+import util.EmailSender;
 import util.Logger;
 
 import java.io.PrintWriter;
@@ -131,11 +133,15 @@ public class MainController {
                 else {
                     Logger.get().addMessage("Error: rss is invalid");
                     StatisticController.get().incrementErrorsOccurredField();
+                    String text = "Error: rss \"" + params[0].toString() + "\" is invalid.";
+                    EmailSender.get().SendEmail(EmailType.Error, text);
                 }
             }
             else {
                 Logger.get().addMessage("Error: rss is invalid");
                 StatisticController.get().incrementErrorsOccurredField();
+                String text = "Error: rss \"" + params[0].toString() + "\" is invalid.";
+                EmailSender.get().SendEmail(EmailType.Error, text);
             }
         }
        catch (ArrayIndexOutOfBoundsException e){
@@ -168,6 +174,10 @@ public class MainController {
             Logger.get().addMessage("Error: NaN:period");
             StatisticController.get().incrementErrorsOccurredField();
         }
+    }
+
+    private static void sendEmail(String[] params){
+        util.EmailSender.get().SendEmail(EmailType.Dafault, "Default text");
     }
 
     private static void viewList(String[] params){
