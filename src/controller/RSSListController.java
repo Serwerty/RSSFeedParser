@@ -44,6 +44,10 @@ public class RSSListController {
             pw.println(outLine);
             id++;
         }
+        else
+        {
+            pw.println("RSS list is empty.");
+        }
     }
 
     public void editList(RssUrl rssUrl, int id){
@@ -52,7 +56,7 @@ public class RSSListController {
             int idInList = ScheduleController.get().addToSchedule(rssUrl, rssUrl.getUpdateRate());
             rssUrl.setIdInTaskList(idInList);
             rssArrayList.set(id, rssUrl);
-            Logger.get().addMessage("Rss Link was edited" + rssUrl.getUrl()!=null?rssUrl.getUrl().toString():rssUrl.getStringLink());
+            Logger.get().addMessage("Rss Link was edited " + rssUrl.getUrl()!=null?rssUrl.getUrl().toString():rssUrl.getStringLink());
         }
         catch (IndexOutOfBoundsException e) {
             Logger.get().addMessage("Error: index out of bounds");
