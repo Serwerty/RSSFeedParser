@@ -1,8 +1,5 @@
 package util;
 
-import java.util.Date;
-import java.util.Properties;
-
 import constants.EmailConstants;
 import constants.EmailType;
 import controller.ConfigController;
@@ -16,6 +13,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import java.util.Date;
+import java.util.Properties;
 
 /**
  * Created by liman on 24.06.2017.
@@ -27,10 +26,11 @@ public class EmailSender {
     private Properties props;
     private Authenticator authenticator;
 
-    private EmailSender(){
+    private EmailSender() {
         props = new Properties();
         authenticator = new Authenticator() {
             private PasswordAuthentication pa = new PasswordAuthentication(EmailConstants.VAL_USERNAME, EmailConstants.VAL_PASSWORD);
+
             @Override
             public PasswordAuthentication getPasswordAuthentication() {
                 return pa;
@@ -44,8 +44,7 @@ public class EmailSender {
         return instance;
     }
 
-    public void SendEmail (EmailType emailType, String text, String[] attachments)
-    {
+    public void SendEmail(EmailType emailType, String text, String[] attachments) {
         props.put(EmailConstants.KEY_HOST, EmailConstants.VAL_HOST);
         props.put(EmailConstants.KEY_PORT, EmailConstants.VAL_PORT);
         props.put(EmailConstants.KEY_SSL, true);
@@ -58,7 +57,7 @@ public class EmailSender {
         try {
             InternetAddress[] address = {new InternetAddress(ConfigController.get().getRecipientEmail())};
             message.setRecipients(Message.RecipientType.TO, address);
-            switch (emailType){
+            switch (emailType) {
                 case Error:
                     message.setSubject(EmailConstants.ERROR_SUBJECT);
                     break;
@@ -70,15 +69,14 @@ public class EmailSender {
                     break;
             }
             message.setSentDate(new Date());
-            if (attachments.length> 0) {
+            if (attachments.length > 0) {
                 // https://www.tutorialspoint.com/javamail_api/javamail_api_send_email_with_attachment.htm
                 BodyPart messageBodyPart = new MimeBodyPart();
                 messageBodyPart.setText(text);
                 Multipart multipart = new MimeMultipart();
                 multipart.addBodyPart(messageBodyPart);
 
-                for(String filePath:attachments)
-                {
+                for (String filePath : attachments) {
                     messageBodyPart = new MimeBodyPart();
                     String filename = filePath;
                     DataSource source = new FileDataSource(filename);
@@ -87,8 +85,7 @@ public class EmailSender {
                     multipart.addBodyPart(messageBodyPart);
                 }
                 message.setContent(multipart);
-            }
-            else{
+            } else {
                 message.setText(text);
             }
 
@@ -101,24 +98,22 @@ public class EmailSender {
         }
     }
 
-    public void SendEmail(EmailType emailType, String text)
-    {
+    public void SendEmail(EmailType emailType, String text) {
         String[] attachments = {};
         SendEmail(emailType, text, attachments);
     }
 
-    public void SendEmail(EmailType emailType, String text, String pathToFile){
+    public void SendEmail(EmailType emailType, String text, String pathToFile) {
         String[] attachments = {pathToFile};
         SendEmail(emailType, text, attachments);
     }
 
-    public String createStatisticsBodyText()
-    {
+    public String createStatisticsBodyText() {
         String statText = String.format("Result statistics:" +
-                "\nTotal news processed (updated and added): %s" +
-                "\nTotal links parsed: %s" +
-                "\nTotal errors occurred: %s" +
-                "\nApplication working time: %s",
+                        "\nTotal news processed (updated and added): %s" +
+                        "\nTotal links parsed: %s" +
+                        "\nTotal errors occurred: %s" +
+                        "\nApplication working time: %s",
                 StatisticController.get().getItemsCollected(),
                 StatisticController.get().getLinksParsed(),
                 StatisticController.get().getErrorsOccurred(),

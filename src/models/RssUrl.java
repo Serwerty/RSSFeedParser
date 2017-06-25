@@ -1,6 +1,5 @@
 package models;
 
-import controller.RSSListController;
 import controller.StatisticController;
 import parser.RSSParser;
 import storage.RSSStorage;
@@ -9,27 +8,18 @@ import util.Logger;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Date;
 
 /**
  * Created by Олег on 24.05.2017.
  */
-public class RssUrl implements Runnable{
+public class RssUrl implements Runnable {
+    private static final String XML_EXTENSION = "xml";
     private URL url;
     private String stringLink;
     private Boolean isValid;
     private short updateRate;
-    private static final String XML_EXTENSION = "xml";
     private RSSStorage storage;
     private int idInTaskList;
-
-    public int getIdInTaskList() {
-        return idInTaskList;
-    }
-
-    public void setIdInTaskList(int idInTaskList) {
-        this.idInTaskList = idInTaskList;
-    }
 
     public RssUrl(String stringLink, short updateRate) {
         storage = new RSSStorage();
@@ -42,6 +32,14 @@ public class RssUrl implements Runnable{
         storage = new RSSStorage();
         this.stringLink = stringLink;
         validateLink();
+    }
+
+    public int getIdInTaskList() {
+        return idInTaskList;
+    }
+
+    public void setIdInTaskList(int idInTaskList) {
+        this.idInTaskList = idInTaskList;
     }
 
     private void validateLink() {
@@ -85,6 +83,10 @@ public class RssUrl implements Runnable{
         return isValid;
     }
 
+    public void setValid(Boolean valid) {
+        isValid = valid;
+    }
+
     public short getUpdateRate() {
         return updateRate;
     }
@@ -93,19 +95,14 @@ public class RssUrl implements Runnable{
         this.updateRate = updateRate;
     }
 
-    public void setValid(Boolean valid) {
-        isValid = valid;
-    }
-
     @Override
     public void run() {
         if (isValid) {
             RSSParser.get().parse(this);
         }
-        if (isValid){
+        if (isValid) {
             storage.saveFile();
-        }
-        else {
+        } else {
             Logger.get().addMessage("Error: rss is invalid");
             StatisticController.get().incrementErrorsOccurredField();
         }

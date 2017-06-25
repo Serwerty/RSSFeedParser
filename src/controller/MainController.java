@@ -4,12 +4,10 @@ import constants.EmailType;
 import constants.MenuConstants;
 import models.RssUrl;
 import parser.RSSParser;
-import storage.RSSStorage;
 import util.EmailSender;
 import util.Logger;
 import util.TextFilter;
 
-import javax.xml.soap.Text;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -62,7 +60,7 @@ public class MainController {
                     help(params);
                     break;
 
-                case  MenuConstants.CMD_VIEW_LOG:
+                case MenuConstants.CMD_VIEW_LOG:
                     viewLog();
                     break;
 
@@ -100,7 +98,7 @@ public class MainController {
 
                 default:
                     if (!MenuConstants.CMD_EXIT.equals(command))
-                    pw.println("Unknown command. Type \"help\" to see commands list.");
+                        pw.println("Unknown command. Type \"help\" to see commands list.");
                     break;
             }
         }
@@ -109,8 +107,7 @@ public class MainController {
         System.exit(0);
     }
 
-    private static void finalStep()
-    {
+    private static void finalStep() {
         Logger.get().exportLog();
         String logfileName = Logger.get().getLogFileName();
         String bodyText = EmailSender.get().createStatisticsBodyText();
@@ -143,24 +140,21 @@ public class MainController {
                 if (rssUrl.getValid()) {
                     print(rssUrl);
                     rssUrl.getStorage().saveFile();
-                }
-                else {
+                } else {
                     Logger.get().addMessage("Error: rss is invalid");
                     StatisticController.get().incrementErrorsOccurredField();
                     String text = "Error: rss \"" + params[0].toString() + "\" is invalid.";
                     EmailSender.get().SendEmail(EmailType.Error, text);
                 }
-            }
-            else {
+            } else {
                 Logger.get().addMessage("Error: rss is invalid");
                 StatisticController.get().incrementErrorsOccurredField();
                 String text = "Error: rss \"" + params[0].toString() + "\" is invalid.";
                 EmailSender.get().SendEmail(EmailType.Error, text);
             }
-        }
-       catch (ArrayIndexOutOfBoundsException e){
-           Logger.get().addMessage("Error: you also need to specify name");
-           StatisticController.get().incrementErrorsOccurredField();
+        } catch (ArrayIndexOutOfBoundsException e) {
+            Logger.get().addMessage("Error: you also need to specify name");
+            StatisticController.get().incrementErrorsOccurredField();
         }
     }
 
@@ -168,25 +162,22 @@ public class MainController {
         Logger.get().printLog(pw);
     }
 
-    private static void addToList(String[] params){
+    private static void addToList(String[] params) {
         short period;
         try {
             if (params.length < 2) {
                 period = ConfigController.get().getPeriodOfTime();
-            }
-            else {
+            } else {
                 period = tryParseShort(params[1]);
             }
             RssUrl rssUrl = new RssUrl(params[0], period);
             if (rssUrl.getValid()) {
                 RSSListController.get().addToList(rssUrl);
-            }
-            else {
+            } else {
                 Logger.get().addMessage("Error: rss is invalid");
                 StatisticController.get().incrementErrorsOccurredField();
             }
-        }
-        catch (ArrayIndexOutOfBoundsException e){
+        } catch (ArrayIndexOutOfBoundsException e) {
             Logger.get().addMessage("Error: you also need to specify name");
             StatisticController.get().incrementErrorsOccurredField();
         }
@@ -195,76 +186,73 @@ public class MainController {
     private static short tryParseShort(String value) {
         try {
             return Short.valueOf(value);
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             Logger.get().addMessage("Error: NaN:period");
             StatisticController.get().incrementErrorsOccurredField();
             return ConfigController.get().getPeriodOfTime();
         }
     }
 
-    private static void sendEmail(String[] params){
+    private static void sendEmail(String[] params) {
         util.EmailSender.get().SendEmail(EmailType.Dafault, "Default text");
     }
 
-    private static void viewList(String[] params){
+    private static void viewList(String[] params) {
         RSSListController.get().printList(pw);
     }
 
-    private static void editList(String[] params){
+    private static void editList(String[] params) {
         short period;
         try {
             if (params.length < 3) {
                 period = ConfigController.get().getPeriodOfTime();
-            }
-            else {
+            } else {
                 period = tryParseShort(params[2]);
             }
             int id = Integer.valueOf(params[0]);
             RssUrl rssUrl = new RssUrl(params[1], period);
             if (rssUrl.getValid()) {
                 RSSListController.get().editList(rssUrl, id);
-            }
-            else {
+            } else {
                 Logger.get().addMessage("Error: rss is invalid");
                 StatisticController.get().incrementErrorsOccurredField();
             }
-        }
-        catch (ArrayIndexOutOfBoundsException e){
+        } catch (ArrayIndexOutOfBoundsException e) {
             Logger.get().addMessage("Error: you also need to specify id and name");
             StatisticController.get().incrementErrorsOccurredField();
-        }
-        catch(NumberFormatException e){
+        } catch (NumberFormatException e) {
             Logger.get().addMessage("Error: Id should be a number");
         }
     }
 
-    private static void deleteListAt(String[] params){
+    private static void deleteListAt(String[] params) {
         try {
             int id = Integer.valueOf(params[0]);
             RSSListController.get().deletelistAt(id);
-        }
-        catch (ArrayIndexOutOfBoundsException e){
+        } catch (ArrayIndexOutOfBoundsException e) {
             Logger.get().addMessage("Error: you need to specify id");
             StatisticController.get().incrementErrorsOccurredField();
         }
     }
 
-    private static void exportList(){
+    private static void exportList() {
         RSSListController.get().exportList();
     }
 
-    private static void importList(){
+    private static void importList() {
         RSSListController.get().cleanUpList();
         RSSListController.get().importList();
     }
 
-    private static void exportLog(){
+    private static void exportLog() {
         Logger.get().exportLog();
     }
 
-    private static void cleanUpList(){ RSSListController.get().cleanUpList();}
+    private static void cleanUpList() {
+        RSSListController.get().cleanUpList();
+    }
 
-    private static void print(RssUrl rssUrl){
+    private static void print(RssUrl rssUrl) {
         rssUrl.getStorage().print();
     }
 }

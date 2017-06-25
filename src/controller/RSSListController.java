@@ -2,7 +2,6 @@ package controller;
 
 import models.RssUrl;
 import util.Logger;
-import util.TextFilter;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -15,6 +14,7 @@ import java.util.ArrayList;
  */
 public class RSSListController {
     private static RSSListController instance;
+    private ArrayList<RssUrl> rssArrayList;
 
     private RSSListController() {
         rssArrayList = new ArrayList<>();
@@ -26,32 +26,29 @@ public class RSSListController {
         return instance;
     }
 
-    private ArrayList<RssUrl> rssArrayList;
-
     public void addToList(RssUrl rssUrl) {
         if (!rssArrayList.contains(rssUrl) && !containsLink(rssUrl)) {
             int idInList = ScheduleController.get().addToSchedule(rssUrl, rssUrl.getUpdateRate());
             rssUrl.setIdInTaskList(idInList);
             rssArrayList.add(rssUrl);
             Logger.get().addMessage("Rss Link added to the Task Scheduler " + idInList);
-        }
-        else{
+        } else {
             Logger.get().addMessage("Rss Link is already in list");
         }
     }
 
-    private boolean containsLink(RssUrl rssUrl){
-       boolean contains = false;
-        for (RssUrl rssUrlInList: rssArrayList) {
-             if (rssUrlInList.getStringLink().equals(rssUrl.getStringLink()))
-                 contains = true;
+    private boolean containsLink(RssUrl rssUrl) {
+        boolean contains = false;
+        for (RssUrl rssUrlInList : rssArrayList) {
+            if (rssUrlInList.getStringLink().equals(rssUrl.getStringLink()))
+                contains = true;
         }
-       return contains;
+        return contains;
     }
 
     public void printList(PrintWriter pw) {
-        int id =0;
-        if(!rssArrayList.isEmpty()) {
+        int id = 0;
+        if (!rssArrayList.isEmpty()) {
             for (RssUrl rssUrl : rssArrayList) {
                 String outLine = Integer.toString(id) + " ";
                 outLine += rssUrl.getUrl() != null ? rssUrl.getUrl() : rssUrl.getStringLink();
@@ -59,22 +56,20 @@ public class RSSListController {
                 pw.println(outLine);
                 id++;
             }
-        }
-        else{
+        } else {
             pw.println("RSS list is empty.");
         }
     }
 
-    public void editList(RssUrl rssUrl, int id){
+    public void editList(RssUrl rssUrl, int id) {
         try {
             ScheduleController.get().deleteAt(rssArrayList.get(id).getIdInTaskList());
             int idInList = ScheduleController.get().addToSchedule(rssUrl, rssUrl.getUpdateRate());
             rssUrl.setIdInTaskList(idInList);
             rssArrayList.set(id, rssUrl);
-            String ternarLine = rssUrl.getUrl()!=null?rssUrl.getUrl().toString():rssUrl.getStringLink();
-            Logger.get().addMessage("Rss Link was edited " +ternarLine);
-        }
-        catch (IndexOutOfBoundsException e) {
+            String ternaryLine = rssUrl.getUrl() != null ? rssUrl.getUrl().toString() : rssUrl.getStringLink();
+            Logger.get().addMessage("Rss Link was edited " + ternaryLine);
+        } catch (IndexOutOfBoundsException e) {
             Logger.get().addMessage("Error: index out of bounds");
             StatisticController.get().incrementErrorsOccurredField();
         }
@@ -84,47 +79,45 @@ public class RSSListController {
         try {
             ScheduleController.get().deleteAt(rssArrayList.get(id).getIdInTaskList());
             rssArrayList.remove(id);
-        }
-        catch (IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             Logger.get().addMessage("Error: index out of bounds");
             StatisticController.get().incrementErrorsOccurredField();
         }
     }
 
-    public void cleanUpList(){
-        for (RssUrl rssUrl: rssArrayList) {
+    public void cleanUpList() {
+        for (RssUrl rssUrl : rssArrayList) {
             ScheduleController.get().deleteAt(rssUrl.getIdInTaskList());
         }
         rssArrayList = new ArrayList<>();
         Logger.get().addMessage("Rss list is cleaned up");
     }
 
-    public int getId(RssUrl rssUrl){
+    public int getId(RssUrl rssUrl) {
         return rssArrayList.indexOf(rssUrl);
     }
 
-    public void exportList(){
+    public void exportList() {
         try {
             File file = new File("rssList/list.dat");
             Path pathToFile = Paths.get("rssList/list.dat");
             Files.createDirectories(pathToFile.getParent());
 
-              try {
+            try {
 
-                    boolean result = Files.deleteIfExists(file.toPath());
-                    if (result) Logger.get().addMessage("Replacing rss list file");
+                boolean result = Files.deleteIfExists(file.toPath());
+                if (result) Logger.get().addMessage("Replacing rss list file");
 
-              }
-              catch (IOException e) {
-              }
+            } catch (IOException e) {
+            }
 
-              Files.createFile(pathToFile);
-              PrintWriter writer = new PrintWriter(file, "UTF-8");
-              for (RssUrl rssUrl : rssArrayList) {
-                  String outLine = rssUrl.getStringLink()+" "+rssUrl.getUpdateRate();
+            Files.createFile(pathToFile);
+            PrintWriter writer = new PrintWriter(file, "UTF-8");
+            for (RssUrl rssUrl : rssArrayList) {
+                String outLine = rssUrl.getStringLink() + " " + rssUrl.getUpdateRate();
                 writer.println(outLine);
             }
-              Logger.get().addMessage("Rss list is exported");
+            Logger.get().addMessage("Rss list is exported");
             writer.close();
         } catch (IOException e) {
             util.Logger.get().addMessage("error while saving rss list file");
@@ -132,7 +125,7 @@ public class RSSListController {
         }
     }
 
-    public void importList(){
+    public void importList() {
         try {
             File file = new File("rssList/list.dat");
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -144,18 +137,15 @@ public class RSSListController {
                     RssUrl rssUrl = new RssUrl(words[0], period);
                     if (rssUrl.getValid()) {
                         RSSListController.get().addToList(rssUrl);
-                    }
-                    else {
-                        Logger.get().addMessage("Error: rss is invalid {"+rssUrl.getStringLink()+"}");
+                    } else {
+                        Logger.get().addMessage("Error: rss is invalid {" + rssUrl.getStringLink() + "}");
                         StatisticController.get().incrementErrorsOccurredField();
                     }
                     Logger.get().addMessage("Rss list is imported");
-                }
-                catch (ArrayIndexOutOfBoundsException e){
+                } catch (ArrayIndexOutOfBoundsException e) {
                     Logger.get().addMessage("Error: bad format, link and period should be always separated by ':' ");
                     StatisticController.get().incrementErrorsOccurredField();
-                }
-                catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
                     Logger.get().addMessage("Error: NaN:period");
                     StatisticController.get().incrementErrorsOccurredField();
                 }

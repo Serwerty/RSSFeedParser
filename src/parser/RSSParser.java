@@ -7,6 +7,7 @@ import controller.RSSListController;
 import controller.StatisticController;
 import models.Item;
 import models.RssUrl;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -14,10 +15,10 @@ import util.EmailSender;
 import util.Logger;
 import util.TextFilter;
 
-import javax.xml.parsers.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,9 +81,7 @@ public class RSSParser {
                 StatisticController.get().incrementErrorsOccurredField();
                 RSSListController.get().deletelistAt(RSSListController.get().getId(rssUrl));
             }
-        }
-        else
-        {
+        } else {
             Logger.get().addMessage("Error: rss is invalid");
             String text = "Error: rss is invalid:" + rssUrl.getStringLink();
             StatisticController.get().incrementErrorsOccurredField();

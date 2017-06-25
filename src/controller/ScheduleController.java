@@ -11,6 +11,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class ScheduleController {
     private static ScheduleController instance;
+    ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+    ArrayList<ScheduledFuture> listOfTasks;
 
     private ScheduleController() {
         listOfTasks = new ArrayList<>();
@@ -22,17 +24,13 @@ public class ScheduleController {
         return instance;
     }
 
-    ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-
-    ArrayList<ScheduledFuture> listOfTasks;
-
-    public int addToSchedule(Runnable runnableRss, long period){
-        ScheduledFuture<?> sf = service.scheduleAtFixedRate( runnableRss, 0, period, TimeUnit.SECONDS);
+    public int addToSchedule(Runnable runnableRss, long period) {
+        ScheduledFuture<?> sf = service.scheduleAtFixedRate(runnableRss, 0, period, TimeUnit.SECONDS);
         listOfTasks.add(sf);
         return listOfTasks.indexOf(sf);
     }
 
-    public void deleteAt(int id){
+    public void deleteAt(int id) {
         listOfTasks.get(id).cancel(false);
         listOfTasks.remove(id);
     }

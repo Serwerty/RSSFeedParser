@@ -7,7 +7,11 @@ import util.TextFilter;
  */
 public class StatisticController {
     private static StatisticController instance;
-
+    private int itemsCollected;
+    private int linksParsed;
+    private int errorsOccurred;
+    private long startTime;
+    private long currentTime;
     private StatisticController() {
     }
 
@@ -16,12 +20,6 @@ public class StatisticController {
             instance = new StatisticController();
         return instance;
     }
-
-    private int itemsCollected;
-    private int linksParsed;
-    private int errorsOccurred;
-    private long startTime;
-    private long currentTime;
 
     public int getItemsCollected() {
         return itemsCollected;
@@ -44,28 +42,28 @@ public class StatisticController {
         return currentTime;
     }
 
-    public String getWorkingTime(){
+    public String getWorkingTime() {
         long curTime = getCurrentTime();
-        long timeInSec = (curTime - startTime)/1000000000;
+        long timeInSec = (curTime - startTime) / 1000000000;
         return TextFilter.get().prepareTime(timeInSec);
     }
 
-    public void Init(){
+    public void Init() {
         startTime = System.nanoTime();
         itemsCollected = 0;
         linksParsed = 0;
         errorsOccurred = 0;
     }
 
-    public void incrementItemsCollectedField(){
-        itemsCollected ++;
+    public void incrementItemsCollectedField() {
+        itemsCollected++;
     }
 
-    public void incrementLinkParsedField(){
-        linksParsed ++;
+    public void incrementLinkParsedField() {
+        linksParsed++;
     }
 
-    public void incrementErrorsOccurredField(){
-        errorsOccurred ++;
+    public void incrementErrorsOccurredField() {
+        errorsOccurred++;
     }
 }

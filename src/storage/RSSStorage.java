@@ -2,7 +2,6 @@ package storage;
 
 import controller.StatisticController;
 import models.Item;
-import sun.rmi.runtime.Log;
 import util.Logger;
 import util.TextFilter;
 
@@ -21,25 +20,23 @@ import java.util.List;
  * Created by Олег on 21.05.2017.
  */
 public class RSSStorage {
-   // private static RSSStorage instance;
+    // private static RSSStorage instance;
     private static final int ONE_MB = 1048576; //1024*1024
     private static final int FILE_MAX_SIZE_MB = 10;
     private static final String DEFAULT_TITLE = "Untitled";
-
-    public RSSStorage() {
-        initStorage();
-    }
-
-   /* public static RSSStorage get() {
-        if (instance == null)
-            instance = new RSSStorage();
-        return instance;
-    }
-*/
+    /* public static RSSStorage get() {
+         if (instance == null)
+             instance = new RSSStorage();
+         return instance;
+     }
+ */
     private List<Item> itemsList;
     private String rssTitle;
     private String rssSource;
     private String rssLink;
+    public RSSStorage() {
+        initStorage();
+    }
 
     public void cleanUp() {
 
@@ -84,12 +81,10 @@ public class RSSStorage {
         this.rssLink = rssLink;
     }
 
-    private File createNewFile()
-    {
+    private File createNewFile() {
         File file = null;
 
-        if (rssTitle == null)
-        {
+        if (rssTitle == null) {
             rssTitle = DEFAULT_TITLE;
         }
 
@@ -109,8 +104,7 @@ public class RSSStorage {
         return file;
     }
 
-    private String createFileName(String title)
-    {
+    private String createFileName(String title) {
         Date dateNow = new Date();
 
         SimpleDateFormat yearFormatter = new SimpleDateFormat("yyyy");
@@ -127,16 +121,14 @@ public class RSSStorage {
         return fileName;
     }
 
-    private Boolean isFileSizeValid(File file)
-    {
+    private Boolean isFileSizeValid(File file) {
         Boolean result = (file.length() / ONE_MB) < FILE_MAX_SIZE_MB;
         return result;
     }
 
-    private void renameFile(File file, int fileNumber)
-    {
+    private void renameFile(File file, int fileNumber) {
         String fileName = file.getPath();
-        String fileExtension = fileName.substring(fileName.length()-4);
+        String fileExtension = fileName.substring(fileName.length() - 4);
         String newFileName = fileName.replace(fileExtension, "_" + Integer.toString(fileNumber) + fileExtension);
 
         File newFile = new File(newFileName);
@@ -150,8 +142,7 @@ public class RSSStorage {
         try {
             PrintWriter writer = new PrintWriter(file, "UTF-8");
             for (Item item : itemsList) {
-                if(!isFileSizeValid(file))
-                {
+                if (!isFileSizeValid(file)) {
                     writer.close();
                     renameFile(file, fileNumber);
                     fileNumber++;

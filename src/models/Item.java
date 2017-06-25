@@ -4,10 +4,6 @@ package models;
  * Created by Олег on 21.05.2017.
  */
 public class Item {
-    public Item() {
-
-    }
-
     private String title;
     private String pubDate;
     private String author;
@@ -15,6 +11,9 @@ public class Item {
     private String description;
     private String category;
     private String link;
+    public Item() {
+
+    }
 
     public String toString() {
         String convertedValue = "\"";

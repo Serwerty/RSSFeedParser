@@ -1,12 +1,10 @@
 package util;
 
 
-
 import controller.ConfigController;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
-import models.Item;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,14 +19,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
-
 /**
  * Created by Олег on 21.05.2017.
  */
 public class Logger {
     private static Logger instance;
     private static PrintWriter writer;
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+    private ListProperty<String> logListProperty;
+    private List<String> logList;
 
     private Logger() {
         logList = new ArrayList<>();
@@ -41,13 +40,9 @@ public class Logger {
         return instance;
     }
 
-    public static void init(PrintWriter pw){
+    public static void init(PrintWriter pw) {
         writer = pw;
     }
-
-    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-    private ListProperty<String> logListProperty;
-    private List<String> logList;
 
     public ListProperty<String> getList() {
         return logListProperty;
@@ -57,20 +52,19 @@ public class Logger {
         String lineToAdd = LocalDateTime.now().format(formatter) + ": " + messageToLog;
         logList.add(lineToAdd);
         logListProperty.set(FXCollections.observableArrayList(logList));
-        if (ConfigController.get().isShowLogByLine()){
+        if (ConfigController.get().isShowLogByLine()) {
             writer.println(lineToAdd);
         }
 
     }
 
     public void printLog(PrintWriter pw) {
-        for (String line: logList) {
+        for (String line : logList) {
             pw.println(line);
         }
     }
 
-    public String getLogFileName()
-    {
+    public String getLogFileName() {
         Date dateNow = new Date();
 
         SimpleDateFormat yearFormatter = new SimpleDateFormat("yyyy");
@@ -86,7 +80,7 @@ public class Logger {
         return logFileName;
     }
 
-    public void exportLog(){
+    public void exportLog() {
         String logFileName = getLogFileName();
 
         try {
@@ -96,8 +90,7 @@ public class Logger {
             try {
                 boolean result = Files.deleteIfExists(file.toPath());
                 Logger.get().addMessage("Replacing log file: " + "log");
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
             }
             Files.createFile(pathToFile);
             PrintWriter writer = new PrintWriter(file, "UTF-8");
@@ -111,7 +104,7 @@ public class Logger {
         }
     }
 
-    public void exportLog(String fileName){
+    public void exportLog(String fileName) {
         Date dateNow = new Date();
 
         SimpleDateFormat yearFormatter = new SimpleDateFormat("yyyy");
@@ -130,8 +123,7 @@ public class Logger {
             try {
                 boolean result = Files.deleteIfExists(file.toPath());
                 Logger.get().addMessage("Replacing log file: " + fileName);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
             }
             Files.createFile(pathToFile);
             PrintWriter writer = new PrintWriter(file, "UTF-8");
