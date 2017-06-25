@@ -54,7 +54,7 @@ public class Logger {
     }
 
     public void addMessage(String messageToLog) {
-        String lineToAdd = LocalDateTime.now() + ": " + messageToLog;
+        String lineToAdd = LocalDateTime.now().format(formatter) + ": " + messageToLog;
         logList.add(lineToAdd);
         logListProperty.set(FXCollections.observableArrayList(logList));
         if (ConfigController.get().isShowLogByLine()){
@@ -87,7 +87,41 @@ public class Logger {
             Files.createDirectories(pathToFile.getParent());
             try {
                 boolean result = Files.deleteIfExists(file.toPath());
-                Logger.get().addMessage("Replacing log file " + "log");
+                Logger.get().addMessage("Replacing log file: " + "log");
+            }
+            catch (IOException e) {
+            }
+            Files.createFile(pathToFile);
+            PrintWriter writer = new PrintWriter(file, "UTF-8");
+            for (String line : logList) {
+                writer.println(line);
+            }
+            Logger.get().addMessage("Log saved");
+            writer.close();
+        } catch (IOException e) {
+            Logger.get().addMessage("Error while saving log");
+        }
+    }
+
+    public void exportLog(String fileName){
+        Date dateNow = new Date();
+
+        SimpleDateFormat yearFormatter = new SimpleDateFormat("yyyy");
+        SimpleDateFormat monthFormatter = new SimpleDateFormat("MM");
+        SimpleDateFormat dayFormatter = new SimpleDateFormat("dd");
+
+
+        String yearDate = yearFormatter.format(dateNow);
+        String monthDate = monthFormatter.format(dateNow);
+        String dayDate = dayFormatter.format(dateNow);
+
+        try {
+            File file = new File(String.format("logs/%s/%s/%s/%s.log", yearDate, monthDate, dayDate, fileName));
+            Path pathToFile = Paths.get(String.format("logs/%s/%s/%s/%s.log", yearDate, monthDate, dayDate, fileName));
+            Files.createDirectories(pathToFile.getParent());
+            try {
+                boolean result = Files.deleteIfExists(file.toPath());
+                Logger.get().addMessage("Replacing log file: " + fileName);
             }
             catch (IOException e) {
             }

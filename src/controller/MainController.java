@@ -7,8 +7,12 @@ import parser.RSSParser;
 import storage.RSSStorage;
 import util.EmailSender;
 import util.Logger;
+import util.TextFilter;
 
+import javax.xml.soap.Text;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -31,7 +35,7 @@ public class MainController {
 
     public static void main(String[] args) {
         String command = null;
-
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         init();
 
         while (!MenuConstants.CMD_EXIT.equals(command)) {
@@ -100,6 +104,7 @@ public class MainController {
                     break;
             }
         }
+        Logger.get().exportLog("logT" + TextFilter.get().prepareToSave(LocalDateTime.now().format(formatter)));
         System.exit(0);
     }
 

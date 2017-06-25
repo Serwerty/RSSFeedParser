@@ -33,6 +33,6 @@ public class TextFilter {
         long minutes = (timeInSec - hours*60*60)/60;
         return Long.toString(hours) + "h " +
                 Long.toString(minutes) + "m " +
-                Long.toString(timeInSec - hours*60*60 - minutes*60 ) + "s ";
+                Long.toString(timeInSec - hours*60*60 - minutes*60 ) + "s";
     }
 }
