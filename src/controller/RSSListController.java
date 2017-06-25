@@ -29,8 +29,9 @@ public class RSSListController {
     private ArrayList<RssUrl> rssArrayList;
 
     public void addToList(RssUrl rssUrl) {
+            int idInList = ScheduleController.get().addToSchedule(rssUrl, rssUrl.getUpdateRate(), rssUrl.getUpdateTimeUnit());
         if (!rssArrayList.contains(rssUrl) && !containsLink(rssUrl)) {
-            int idInList = ScheduleController.get().addToSchedule(rssUrl, rssUrl.getUpdateRate());
+            int idInList = ScheduleController.get().addToSchedule(rssUrl, rssUrl.getUpdateRate(), rssUrl.getUpdateTimeUnit());
             rssUrl.setIdInTaskList(idInList);
             rssArrayList.add(rssUrl);
             Logger.get().addMessage("Rss Link added to the Task Scheduler " + idInList);
@@ -68,7 +69,7 @@ public class RSSListController {
     public void editList(RssUrl rssUrl, int id){
         try {
             ScheduleController.get().deleteAt(rssArrayList.get(id).getIdInTaskList());
-            int idInList = ScheduleController.get().addToSchedule(rssUrl, rssUrl.getUpdateRate());
+            int idInList = ScheduleController.get().addToSchedule(rssUrl, rssUrl.getUpdateRate(), rssUrl.getUpdateTimeUnit());
             rssUrl.setIdInTaskList(idInList);
             rssArrayList.set(id, rssUrl);
             Logger.get().addMessage("Rss Link was edited " + rssUrl.getUrl()!=null?rssUrl.getUrl().toString():rssUrl.getStringLink());

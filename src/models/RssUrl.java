@@ -10,6 +10,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Олег on 24.05.2017.
@@ -19,6 +20,7 @@ public class RssUrl implements Runnable{
     private String stringLink;
     private Boolean isValid;
     private short updateRate;
+    private TimeUnit updateTimeUnit;
     private static final String XML_EXTENSION = "xml";
     private RSSStorage storage;
     private int idInTaskList;
@@ -31,10 +33,11 @@ public class RssUrl implements Runnable{
         this.idInTaskList = idInTaskList;
     }
 
-    public RssUrl(String stringLink, short updateRate) {
+    public RssUrl(String stringLink, short updateRate, TimeUnit updateTimeUnit) {
         storage = new RSSStorage();
         this.stringLink = stringLink;
         this.updateRate = updateRate;
+        this.updateTimeUnit = updateTimeUnit;
         validateLink();
     }
 
@@ -83,6 +86,14 @@ public class RssUrl implements Runnable{
 
     public Boolean getValid() {
         return isValid;
+    }
+
+    public TimeUnit getUpdateTimeUnit() {
+        return updateTimeUnit;
+    }
+
+    public void setUpdateTimeUnit(TimeUnit updateTimeUnit) {
+        this.updateTimeUnit = updateTimeUnit;
     }
 
     public short getUpdateRate() {

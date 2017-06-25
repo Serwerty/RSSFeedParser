@@ -1,5 +1,6 @@
 package controller;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import constants.MenuConstants;
 import models.RssUrl;
 import parser.RSSParser;
@@ -9,6 +10,7 @@ import util.Logger;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Олег on 21.05.2017.
@@ -43,7 +45,6 @@ public class MainController {
                     params = Arrays.copyOfRange(words, 1, words.length);
                 }
             } else {
-
                 continue;
             }
 
@@ -113,13 +114,15 @@ public class MainController {
         pw.println("Type \"export_list\" to export rss list.");
         pw.println("Type \"import_list\" to import rss list.");
         pw.println("Type \"clean_list\" to clean up rss list.");
-        pw.println("Type \"add {url} {period}\" to add rss into list with some period of executing.");
-        pw.println("Type \"edit {id} {url} {period}\" to edit rss in list with some period of executing.");
+        pw.println("Type \"add {url} {time_unit_type} {period}\" to add rss into list of auto-executing.");
+        timeUnitHelp();
+        pw.println("Type \"edit {id} {url} {time_unit_type} {period}\" to edit rss in list with some period of executing.");
         pw.println("Type \"delete {id}\" to delete rss from list.");
         pw.println("===========================================");
     }
 
     private static void parseURL(String[] params) {
+        Boolean result = false;
         try {
             RssUrl rssUrl = new RssUrl(params[0]);
             if (rssUrl.getValid()) {
@@ -127,6 +130,7 @@ public class MainController {
                 if (rssUrl.getValid()) {
                     print(rssUrl);
                     rssUrl.getStorage().saveFile();
+                    result = true;
                 }
                 else {
                     Logger.get().addMessage("Error: rss is invalid");
@@ -142,18 +146,46 @@ public class MainController {
            Logger.get().addMessage("Error: you also need to specify name");
            StatisticController.get().incrementErrorsOccurredField();
         }
+        if(result)
+        { pw.println("URL parsing finished."); }
+        else { pw.println("URL parsing failed. Check log file."); }
     }
 
     private static void viewLog() {
         Logger.get().printLog(pw);
     }
 
+    private static void timeUnitHelp(){
+        pw.println("\t\t\t\tTime unit types:");
+        pw.println("\t\t\t\ts - seconds; m - minutes; h - hours; d - days");
+    }
+
+    private static TimeUnit convertToTimeUnit(String timeUnitType)
+    {
+        switch (timeUnitType.toLowerCase()){
+            case "s":
+                return TimeUnit.SECONDS;
+            case "m":
+                return TimeUnit.MINUTES;
+            case "h":
+                return TimeUnit.HOURS;
+            case "d":
+                return TimeUnit.DAYS;
+            default:
+                pw.println("Incorrect time unit type. Minutes were set by default. You can change it in edit mode.");
+                return TimeUnit.MINUTES;
+        }
+    }
+
     private static void addToList(String[] params){
+
         try {
-            short period = Short.valueOf(params[1]);
-            RssUrl rssUrl = new RssUrl(params[0], period);
+            TimeUnit timeUnit = convertToTimeUnit(params[1]);
+            short period = Short.valueOf(params[2]);
+            RssUrl rssUrl = new RssUrl(params[0], period, timeUnit);
             if (rssUrl.getValid()) {
                 RSSListController.get().addToList(rssUrl);
+                pw.println("URL was successfully added.");
             }
             else {
                 Logger.get().addMessage("Error: rss is invalid");
@@ -178,9 +210,10 @@ public class MainController {
         try {
             short period = Short.valueOf(params[2]);
             int id = Integer.valueOf(params[0]);
-            RssUrl rssUrl = new RssUrl(params[1], period);
+            RssUrl rssUrl = new RssUrl(params[1], period, convertToTimeUnit(params[3]));
             if (rssUrl.getValid()) {
                 RSSListController.get().editList(rssUrl, id);
+                pw.println("URL was successfully edited.");
             }
             else {
                 Logger.get().addMessage("Error: rss is invalid");
@@ -219,6 +252,7 @@ public class MainController {
 
     private static void exportLog(){
         Logger.get().exportLog();
+
     }
 
     private static void cleanUpList(){ RSSListController.get().cleanUpList();}
