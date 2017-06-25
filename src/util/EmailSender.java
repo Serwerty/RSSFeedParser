@@ -18,6 +18,7 @@ import javax.mail.internet.MimeMessage;
  * Created by liman on 24.06.2017.
  */
 public class EmailSender {
+    //got partially from http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/javamail/javamail.html
 
     private static EmailSender instance;
     private Properties props;
@@ -67,7 +68,10 @@ public class EmailSender {
                 message.setSentDate(new Date());
                 message.setText(text);
                 Transport.send(message);
+                Logger.get().addMessage(String.format("EMAIL INFO: Email of type \"%s\"" +
+                        " was sent to %s.", emailType.toString(), address[0].toString()));
             } catch (MessagingException e) {
+                Logger.get().addMessage("EMAIL ERROR: Error while sending email.");
                 throw new RuntimeException(e);
             }
         }
