@@ -21,6 +21,9 @@ import java.util.List;
  */
 public class RSSStorage {
    // private static RSSStorage instance;
+    private static final int ONE_MB = 1048576; //1024*1024
+    private static final int FILE_MAX_SIZE_MB = 10;
+    private static final String DEFAULT_TITLE = "Untitled";
 
     public RSSStorage() {
         initStorage();
@@ -80,35 +83,80 @@ public class RSSStorage {
         this.rssLink = rssLink;
     }
 
-    public void saveFile() {
+    private File createNewFile()
+    {
+        File file = null;
+
+        if (rssTitle == null)
+        {
+            rssTitle = DEFAULT_TITLE;
+        }
+
+        String fileName = createFileName(rssTitle);
+
+        try {
+            file = new File(fileName);
+            Path pathToFile = Paths.get(fileName);
+            Files.createDirectories(pathToFile.getParent());
+            Files.createFile(pathToFile);
+
+        } catch (IOException e) {
+            Logger.get().addMessage("Error while saving the file " + TextFilter.get().prepareToSave(rssTitle));
+        }
+        return file;
+    }
+
+    private String createFileName(String title)
+    {
         Date dateNow = new Date();
 
         SimpleDateFormat yearFormatter = new SimpleDateFormat("yyyy");
         SimpleDateFormat monthFormatter = new SimpleDateFormat("MM");
         SimpleDateFormat dayFormatter = new SimpleDateFormat("dd");
 
-
         String yearDate = yearFormatter.format(dateNow);
         String monthDate = monthFormatter.format(dateNow);
         String dayDate = dayFormatter.format(dateNow);
-        if (rssTitle == null)
-            rssTitle = "Untitled";
+
+        String fileName = String.format("csvStorage/%s/%s/%s/%s.csv", yearDate, monthDate, dayDate,
+                TextFilter.get().prepareToSave(title));
+
+        return fileName;
+    }
+
+    private Boolean isFileSizeValid(File file)
+    {
+        Boolean result = (file.length() / ONE_MB) < FILE_MAX_SIZE_MB;
+        return result;
+    }
+
+    private void renameFile(File file, int fileNumber)
+    {
+        String fileName = file.getPath();
+        String fileExtension = fileName.substring(fileName.length()-4);
+        String newFileName = fileName.replace(fileExtension, "_" + Integer.toString(fileNumber) + fileExtension);
+
+        File newFile = new File(newFileName);
+        file.renameTo(newFile);
+    }
+
+    public void saveFile() {
+
+        File file = createNewFile();
+        int fileNumber = 1;
         try {
-            File file = new File(String.format("csvStorage/%s/%s/%s/%s.csv", yearDate, monthDate, dayDate,
-                    TextFilter.get().prepareToSave(rssTitle)));
-            Path pathToFile = Paths.get(String.format("csvStorage/%s/%s/%s/%s.csv", yearDate, monthDate, dayDate,
-                    TextFilter.get().prepareToSave(rssTitle)));
-            Files.createDirectories(pathToFile.getParent());
-            try {
-                boolean result = Files.deleteIfExists(file.toPath());
-                Logger.get().addMessage("Replacing file " + TextFilter.get().prepareToSave(rssTitle));
-            }
-            catch (IOException e) {
-            }
-            Files.createFile(pathToFile);
             PrintWriter writer = new PrintWriter(file, "UTF-8");
             for (Item item : itemsList) {
+                if(!isFileSizeValid(file))
+                {
+                    writer.close();
+                    renameFile(file, fileNumber);
+                    fileNumber++;
+                    file = createNewFile();
+                    writer = new PrintWriter(file, "UTF-8");
+                }
                 writer.println(item.toString());
+                writer.flush();
             }
             Logger.get().addMessage("File saved " + TextFilter.get().prepareToSave(rssTitle));
             writer.close();
