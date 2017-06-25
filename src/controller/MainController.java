@@ -90,14 +90,16 @@ public class MainController {
                     break;
 
                 case MenuConstants.CMD_CLEAN_UP_LIST:
-                    exportList();
+                    cleanUpList();
                     break;
 
                 default:
+                    if (!MenuConstants.CMD_EXIT.equals(command))
                     pw.println("Unknown command. Type \"help\" to see commands list.");
                     break;
             }
         }
+        System.exit(0);
     }
 
     private static void help(String[] params) {
@@ -109,6 +111,9 @@ public class MainController {
         pw.println("Type \"view_log\" to view log.");
         pw.println("Type \"export_log\" to export log in a logs folder.");
         pw.println("Type \"list\" to view rss list in progress.");
+        pw.println("Type \"export_list\" to export rss list.");
+        pw.println("Type \"import_list\" to import rss list.");
+        pw.println("Type \"clean_list\" to clean up rss list.");
         pw.println("Type \"add {url} {period}\" to add rss into list with some period of executing.");
         pw.println("Type \"edit {id} {url} {period}\" to edit rss in list with some period of executing.");
         pw.println("Type \"delete {id}\" to delete rss from list.");
