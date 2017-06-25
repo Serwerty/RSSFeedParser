@@ -45,7 +45,7 @@ public class Logger {
         writer = pw;
     }
 
-    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
     private ListProperty<String> logListProperty;
     private List<String> logList;
 

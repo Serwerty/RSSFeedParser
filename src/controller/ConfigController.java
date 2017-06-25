@@ -26,6 +26,15 @@ public class ConfigController {
     private boolean showLogByLine = true;
     private String recipientEmail = "kateryna.liman@gmail.com";
     private TimeUnit timeUnit = TimeUnit.SECONDS;
+    private short periodOfTime = 15;
+
+    public TimeUnit getTimeUnit() {
+        return timeUnit;
+    }
+
+    public short getPeriodOfTime() {
+        return periodOfTime;
+    }
 
     public String getRecipientEmail() {
         return recipientEmail;
@@ -54,6 +63,7 @@ public class ConfigController {
                     if("DAYS".equals(words[1]))
                         timeUnit = TimeUnit.DAYS;
                 }
+                if ("periodOfTime".equals(words[0])) periodOfTime = Short.valueOf(words[1]);
             }
         } catch (IOException e) {
             util.Logger.get().addMessage("error while reading config file");

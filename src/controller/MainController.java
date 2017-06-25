@@ -160,8 +160,14 @@ public class MainController {
     }
 
     private static void addToList(String[] params){
+        short period;
         try {
-            short period = Short.valueOf(params[1]);
+            if (params.length < 2) {
+                period = ConfigController.get().getPeriodOfTime();
+            }
+            else {
+                period = tryParseShort(params[1]);
+            }
             RssUrl rssUrl = new RssUrl(params[0], period);
             if (rssUrl.getValid()) {
                 RSSListController.get().addToList(rssUrl);
@@ -172,12 +178,18 @@ public class MainController {
             }
         }
         catch (ArrayIndexOutOfBoundsException e){
-            Logger.get().addMessage("Error: you also need to specify name and period of time");
+            Logger.get().addMessage("Error: you also need to specify name");
             StatisticController.get().incrementErrorsOccurredField();
         }
-        catch (NumberFormatException e){
+    }
+
+    private static short tryParseShort(String value) {
+        try {
+            return Short.valueOf(value);
+        } catch(NumberFormatException e) {
             Logger.get().addMessage("Error: NaN:period");
             StatisticController.get().incrementErrorsOccurredField();
+            return ConfigController.get().getPeriodOfTime();
         }
     }
 
@@ -190,8 +202,14 @@ public class MainController {
     }
 
     private static void editList(String[] params){
+        short period;
         try {
-            short period = Short.valueOf(params[2]);
+            if (params.length < 3) {
+                period = ConfigController.get().getPeriodOfTime();
+            }
+            else {
+                period = tryParseShort(params[2]);
+            }
             int id = Integer.valueOf(params[0]);
             RssUrl rssUrl = new RssUrl(params[1], period);
             if (rssUrl.getValid()) {
@@ -203,12 +221,11 @@ public class MainController {
             }
         }
         catch (ArrayIndexOutOfBoundsException e){
-            Logger.get().addMessage("Error: you also need to specify id, name and period of time");
+            Logger.get().addMessage("Error: you also need to specify id and name");
             StatisticController.get().incrementErrorsOccurredField();
         }
-        catch (NumberFormatException e){
-            Logger.get().addMessage("Error: NaN:period");
-            StatisticController.get().incrementErrorsOccurredField();
+        catch(NumberFormatException e){
+            Logger.get().addMessage("Error: Id should be a number");
         }
     }
 
