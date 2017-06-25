@@ -20,6 +20,7 @@ public class MainController {
     private static void init() {
         sc = new Scanner(System.in);
         pw = new PrintWriter(System.out, true);
+        pw.println("============= RSS Feed Parser =============");
         help(null);
     }
 
@@ -39,6 +40,7 @@ public class MainController {
                     params = Arrays.copyOfRange(words, 1, words.length);
                 }
             } else {
+
                 continue;
             }
 
@@ -80,22 +82,25 @@ public class MainController {
                     break;
 
                 default:
+                    pw.println("Unknown command. Type \"help\" to see commands list.");
                     break;
             }
         }
     }
 
     private static void help(String[] params) {
-        pw.println("Type help to see commands list.");
-        pw.println("Type exit to exit application.");
-        pw.println("Type parse URL to parse that URL.");
+        pw.println("================= M E N U =================");
+        pw.println("Type \"help\" to see commands list.");
+        pw.println("Type \"exit\" to exit application.");
+        pw.println("Type \"parse {url}\" to parse that URL.");
         //pw.println("Type print to print parsed feed from URL.");
-        pw.println("Type view_log to view log.");
-        pw.println("Type export_log to export log in a logs folder.");
-        pw.println("Type list to view rss list in progress.");
-        pw.println("Type add {url} {period} to add rss into list with some period of executing.");
-        pw.println("Type edit {id} {url} {period} to edit rss in list with some period of executing.");
-        pw.println("Type delete {id} to delete rss from list.");
+        pw.println("Type \"view_log\" to view log.");
+        pw.println("Type \"export_log\" to export log in a logs folder.");
+        pw.println("Type \"list\" to view rss list in progress.");
+        pw.println("Type \"add {url} {period}\" to add rss into list with some period of executing.");
+        pw.println("Type \"edit {id} {url} {period}\" to edit rss in list with some period of executing.");
+        pw.println("Type \"delete {id}\" to delete rss from list.");
+        pw.println("===========================================");
     }
 
     private static void parseURL(String[] params) {
