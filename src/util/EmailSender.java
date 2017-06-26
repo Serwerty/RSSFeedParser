@@ -17,6 +17,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.util.Date;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by liman on 24.06.2017.
@@ -137,19 +138,24 @@ public class EmailSender {
 
     public void initDailyTimer()
     {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, ConfigController.get().getDailyHours());
-        calendar.set(Calendar.MINUTE, ConfigController.get().getDailyMinutes());
+        //https://stackoverflow.com/questions/9375882/how-i-can-run-my-timertask-everyday-2-pm
+        Calendar date = Calendar.getInstance();
+        date.set(Calendar.HOUR_OF_DAY, ConfigController.get().getDailyHours());
+        date.set(Calendar.MINUTE, ConfigController.get().getDailyMinutes());
 
-        Date alarmTime = calendar.getTime();
+        if(date.before(Calendar.getInstance()))
+        {
+            date.add(Calendar.DAY_OF_WEEK, 1);
+        }
 
-        Timer _timer = new Timer();
-        TimerTask task = new TimerTask() {
+        Timer timer = new Timer();
+        TimerTask dailyEmailTask = new TimerTask() {
             @Override
             public void run() {
                 sendStatistics();
             }
         };
-        _timer.schedule(task, alarmTime);
+
+        timer.schedule(dailyEmailTask, date.getTime(), TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS));
     }
 }

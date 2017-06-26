@@ -1,4 +1,6 @@
 showLogByLine:true
 recipientEmail:kateryna.liman@gmail.com
-timeUnit:SECONDS
+timeUnit:MINUTES
 periodOfTime:15
+dailyHours:12
+dailyMinutes:30
