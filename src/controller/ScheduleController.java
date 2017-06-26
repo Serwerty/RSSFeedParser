@@ -25,7 +25,7 @@ public class ScheduleController {
     }
 
     public int addToSchedule(Runnable runnableRss, long period) {
-        ScheduledFuture<?> sf = service.scheduleAtFixedRate(runnableRss, 0, period, TimeUnit.SECONDS);
+        ScheduledFuture<?> sf = service.scheduleAtFixedRate(runnableRss, 0, period, ConfigController.get().getTimeUnit());
         listOfTasks.add(sf);
         return listOfTasks.indexOf(sf);
     }
