@@ -68,18 +68,15 @@ public class RSSParser {
             } catch (ParserConfigurationException exp) {
                 String text = "Error while configuring of the parser.";
                 Logger.get().addMessage(text);
-                EmailSender.get().sendEmail(EmailType.Error, text);
                 StatisticController.get().incrementErrorsOccurredField();
             } catch (IOException exp) {
                 String text = "Error while parsing url:" + rssUrl.getStringLink();
                 Logger.get().addMessage(text);
-                EmailSender.get().sendEmail(EmailType.Error, text);
                 StatisticController.get().incrementErrorsOccurredField();
             } catch (SAXException exp) {
                 rssUrl.setValid(false);
                 String text = "SAX Error while parsing url:" + rssUrl.getStringLink();
                 Logger.get().addMessage(text);
-                EmailSender.get().sendEmail(EmailType.Error, text);
                 StatisticController.get().incrementErrorsOccurredField();
                 RSSListController.get().deletelistAt(RSSListController.get().getId(rssUrl));
             }
