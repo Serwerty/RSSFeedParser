@@ -6,8 +6,8 @@ package constants;
 public class EmailConstants {
     public static final int VAL_PORT = 465;
     public static final String VAL_HOST = "smtp.gmail.com";
-    public static final String VAL_USERNAME = "idsm2016.kharkiv@gmail.com";
-    public static final String VAL_PASSWORD = "2016idsm";
+    public static final String VAL_USERNAME = "rssfeedparser.idsm@gmail.com";
+    public static final String VAL_PASSWORD = "rssfeedparser2016";
 
     public static final String KEY_PORT = "mail.smtp.port";
     public static final String KEY_HOST = "mail.smtp.host";
@@ -19,4 +19,7 @@ public class EmailConstants {
     public static final String DEFAULT_SUBJECT = "RSSFeedParser Info";
 
     public static final String EMAIL_DEFAULT_RECIPIENT = "kateryna.liman@gmail.com";
+
+    public static final int DAILY_TIMER_HOURS = 10;
+    public static final int DAILY_TIMER_MINUTES = 0;
 }
