@@ -1,5 +1,6 @@
 package util;
 
+import com.sun.xml.internal.ws.developer.MemberSubmissionEndpointReference;
 import constants.EmailConstants;
 import constants.EmailType;
 import controller.ConfigController;
@@ -50,6 +51,7 @@ public class EmailSender {
             props.put(EmailConstants.KEY_PORT, EmailConstants.VAL_PORT);
             props.put(EmailConstants.KEY_SSL, true);
             props.put(EmailConstants.KEY_AUTH, true);
+            props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
 
             Session session = Session.getInstance(props, authenticator);
             //session.setDebug(debug);
@@ -58,6 +60,8 @@ public class EmailSender {
             try {
                 InternetAddress[] address = {new InternetAddress(ConfigController.get().getRecipientEmail())};
                 message.setRecipients(Message.RecipientType.TO, address);
+                InternetAddress localAddress = new InternetAddress(EmailConstants.VAL_USERNAME, false);
+                message.setFrom(localAddress);
                 switch (emailType) {
                     case Error:
                         message.setSubject(EmailConstants.ERROR_SUBJECT);
@@ -76,7 +80,6 @@ public class EmailSender {
                     messageBodyPart.setText(text);
                     Multipart multipart = new MimeMultipart();
                     multipart.addBodyPart(messageBodyPart);
-
                     for (String filePath : attachments) {
                         messageBodyPart = new MimeBodyPart();
                         String filename = filePath;

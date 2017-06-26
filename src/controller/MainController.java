@@ -36,6 +36,7 @@ public class MainController {
         String command = null;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         init();
+        sendEmail();
         while (!MenuConstants.CMD_EXIT.equals(command)) {
             String line = sc.nextLine();
             String[] words = line.split(" ");
