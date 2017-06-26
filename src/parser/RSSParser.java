@@ -19,7 +19,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -89,9 +91,25 @@ public class RSSParser {
         }
     }
 
+    private void checkCSVLink(RssUrl rssUrl){
+        Date dateNow = new Date();
+
+        SimpleDateFormat yearFormatter = new SimpleDateFormat("yyyy");
+        SimpleDateFormat monthFormatter = new SimpleDateFormat("MM");
+        SimpleDateFormat dayFormatter = new SimpleDateFormat("dd");
+
+        String yearDate = yearFormatter.format(dateNow);
+        String monthDate = monthFormatter.format(dateNow);
+        String dayDate = dayFormatter.format(dateNow);
+
+        String fileName = String.format("csvStorage/%s/%s/%s/%s.csv", yearDate, monthDate, dayDate,
+                TextFilter.get().prepareToSave(rssUrl.getStorage().getRssTitle()));
+        File fileToCheck = new File(fileName);
+        if (fileToCheck.exists()) rssUrl.setCsvFilePath(fileName);
+    }
 
     private List<Item> getItems(NodeList itemNodes, RssUrl rssUrl) {
-
+        checkCSVLink(rssUrl);
         List<Item> items = CSVParser.get().getItems(rssUrl);
         for (int i = 0; i < itemNodes.getLength(); i++) {
             Item item = new Item();
