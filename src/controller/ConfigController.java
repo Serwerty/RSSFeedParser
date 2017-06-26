@@ -72,6 +72,7 @@ public class ConfigController {
                 if("dailyHours".equals(words[0])) hours = Integer.valueOf(words[1]);
                 if("dailyMinutes".equals(words[0])) minutes = Integer.valueOf(words[1]);
             }
+            br.close();
         } catch (IOException e) {
             util.Logger.get().addMessage("error while reading config file");
             StatisticController.get().incrementErrorsOccurredField();

@@ -133,27 +133,38 @@ public class RSSListController {
             String readLine = "";
             while ((readLine = br.readLine()) != null) {
                 String[] words = readLine.split(" ");
+                short period;
                 try {
-                    short period = Short.valueOf(words[1]);
+                    if (words.length < 2) {
+                        period = ConfigController.get().getPeriodOfTime();
+                    } else {
+                        period = tryParseShort(words[1]);
+                    }
                     RssUrl rssUrl = new RssUrl(words[0], period);
                     if (rssUrl.getValid()) {
                         RSSListController.get().addToList(rssUrl);
                     } else {
-                        Logger.get().addMessage("Error: rss is invalid {" + rssUrl.getStringLink() + "}");
+                        Logger.get().addMessage("Error: rss is invalid");
                         StatisticController.get().incrementErrorsOccurredField();
                     }
-                    Logger.get().addMessage("Rss list is imported");
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    Logger.get().addMessage("Error: bad format, link and period should be always separated by ' ' ");
-                    StatisticController.get().incrementErrorsOccurredField();
-                } catch (NumberFormatException e) {
-                    Logger.get().addMessage("Error: NaN:period");
+                    Logger.get().addMessage("Error: you also need to specify name");
                     StatisticController.get().incrementErrorsOccurredField();
                 }
             }
         } catch (IOException e) {
             util.Logger.get().addMessage("error while reading rss list file");
             StatisticController.get().incrementErrorsOccurredField();
+        }
+    }
+
+    private short tryParseShort(String value) {
+        try {
+            return Short.valueOf(value);
+        } catch (NumberFormatException e) {
+            Logger.get().addMessage("Error: NaN:period");
+            StatisticController.get().incrementErrorsOccurredField();
+            return ConfigController.get().getPeriodOfTime();
         }
     }
 }

@@ -41,6 +41,7 @@ public class CSVParser {
                     item.setLink(words[6].substring(1, words[6].length()-1));
                     items.add(item);
                 }
+                br.close();
             } catch (FileNotFoundException e) {
                 Logger.get().addMessage("Error: file not found.");
             } catch (IOException e) {
