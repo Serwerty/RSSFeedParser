@@ -144,7 +144,7 @@ public class RSSListController {
                     }
                     Logger.get().addMessage("Rss list is imported");
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    Logger.get().addMessage("Error: bad format, link and period should be always separated by ':' ");
+                    Logger.get().addMessage("Error: bad format, link and period should be always separated by ' ' ");
                     StatisticController.get().incrementErrorsOccurredField();
                 } catch (NumberFormatException e) {
                     Logger.get().addMessage("Error: NaN:period");
