@@ -20,6 +20,6 @@ public class EmailConstants {
 
     public static final String EMAIL_DEFAULT_RECIPIENT = "kateryna.liman@gmail.com";
 
-    public static final int DAILY_TIMER_HOURS = 10;
+    public static final int DAILY_TIMER_HOURS = 12;
     public static final int DAILY_TIMER_MINUTES = 0;
 }
