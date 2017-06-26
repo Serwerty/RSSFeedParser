@@ -36,7 +36,7 @@ public class MainController {
         String command = null;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         init();
-
+        //sendEmail();
         while (!MenuConstants.CMD_EXIT.equals(command)) {
             String line = sc.nextLine();
             String[] words = line.split(" ");
@@ -187,7 +187,7 @@ public class MainController {
         }
     }
 
-    private static void sendEmail(String[] params) {
+    private static void sendEmail() {
         util.EmailSender.get().sendEmail(EmailType.Dafault, "Default text");
     }
 

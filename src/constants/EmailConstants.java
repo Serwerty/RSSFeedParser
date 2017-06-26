@@ -18,7 +18,7 @@ public class EmailConstants {
     public static final String STATISTICS_SUBJECT = "RSSFeedParser Statistics";
     public static final String DEFAULT_SUBJECT = "RSSFeedParser Info";
 
-    public static final String EMAIL_DEFAULT_RECIPIENT = "kateryna.liman@gmail.com";
+    public static final String EMAIL_DEFAULT_RECIPIENT = "oleg.dovzhenko2012@gmail.com";
 
     public static final int DAILY_TIMER_HOURS = 12;
     public static final int DAILY_TIMER_MINUTES = 0;

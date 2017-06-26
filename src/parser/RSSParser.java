@@ -71,13 +71,13 @@ public class RSSParser {
                 EmailSender.get().sendEmail(EmailType.Error, text);
                 StatisticController.get().incrementErrorsOccurredField();
             } catch (IOException exp) {
-                String text = "Error while parsing url:" + rssUrl.getStringLink();
+                String text = "Error while parsing url: " + rssUrl.getStringLink();
                 Logger.get().addMessage(text);
                 EmailSender.get().sendEmail(EmailType.Error, text);
                 StatisticController.get().incrementErrorsOccurredField();
             } catch (SAXException exp) {
                 rssUrl.setValid(false);
-                String text = "SAX Error while parsing url:" + rssUrl.getStringLink();
+                String text = "SAX Error while parsing url: " + rssUrl.getStringLink();
                 Logger.get().addMessage(text);
                 EmailSender.get().sendEmail(EmailType.Error, text);
                 StatisticController.get().incrementErrorsOccurredField();
@@ -85,7 +85,7 @@ public class RSSParser {
             }
         } else {
             Logger.get().addMessage("Error: rss is invalid");
-            String text = "Error: rss is invalid:" + rssUrl.getStringLink();
+            String text = "Error: rss is invalid: " + rssUrl.getStringLink();
             StatisticController.get().incrementErrorsOccurredField();
             EmailSender.get().sendEmail(EmailType.Error, text);
         }

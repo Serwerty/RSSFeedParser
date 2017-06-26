@@ -88,7 +88,7 @@ public class RSSListController {
 
     public void cleanUpList() {
         for (RssUrl rssUrl : rssArrayList) {
-            ScheduleController.get().deleteAt(rssUrl.getIdInTaskList());
+            ScheduleController.get().deleteAt(0);
         }
         rssArrayList = new ArrayList<>();
         Logger.get().addMessage("Rss list is cleaned up");
