@@ -60,7 +60,7 @@ public class RSSParser {
                 rssUrl.getStorage().setRssLink(getCharacterDataFromElement((Element) rssLink.item(0)));
 
                 NodeList nodes = doc.getElementsByTagName(RSSTags.ITEM_TAG);
-                rssUrl.getStorage().setItemsList(getItems(nodes));
+                rssUrl.getStorage().setItemsList(getItems(nodes, rssUrl));
                 StatisticController.get().incrementLinkParsedField();
 
             } catch (ParserConfigurationException exp) {
@@ -90,9 +90,9 @@ public class RSSParser {
     }
 
 
-    private List<Item> getItems(NodeList itemNodes) {
+    private List<Item> getItems(NodeList itemNodes, RssUrl rssUrl) {
 
-        List<Item> items = new ArrayList<>();
+        List<Item> items = CSVParser.get().getItems(rssUrl);
         for (int i = 0; i < itemNodes.getLength(); i++) {
             Item item = new Item();
             Element element = (Element) itemNodes.item(i);
@@ -105,8 +105,19 @@ public class RSSParser {
             item.setLastUpdateDate(getCharacterDataFromTag(element, RSSTags.LASTBUILDDATE_TAG));
             item.setLink(getCharacterDataFromTag(element, RSSTags.LINK_TAG));
 
-            items.add(item);
-            StatisticController.get().incrementItemsCollectedField();
+            boolean contains = false;
+            for (Item itemToCheck : items) {
+                if (itemToCheck.getTitle().equals(item.getTitle())){
+                    contains = true;
+                    if (!items.contains(item)){
+                        items.set(items.indexOf(itemToCheck),item);
+                    }
+                }
+            }
+            if (!contains) {
+                items.add(item);
+                StatisticController.get().incrementItemsCollectedField();
+            }
         }
         return items;
     }

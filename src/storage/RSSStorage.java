@@ -34,12 +34,17 @@ public class RSSStorage {
     private String rssTitle;
     private String rssSource;
     private String rssLink;
+    private String csvFilePath;
     public RSSStorage() {
         initStorage();
     }
 
     public void cleanUp() {
 
+    }
+
+    public String getCsvFilePath() {
+        return csvFilePath;
     }
 
     private void initStorage() {
@@ -117,7 +122,7 @@ public class RSSStorage {
 
         String fileName = String.format("csvStorage/%s/%s/%s/%s.csv", yearDate, monthDate, dayDate,
                 TextFilter.get().prepareToSave(title));
-
+        csvFilePath = fileName;
         return fileName;
     }
 

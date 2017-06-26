@@ -20,6 +20,7 @@ public class RssUrl implements Runnable {
     private short updateRate;
     private RSSStorage storage;
     private int idInTaskList;
+    private String csvFilePath;
 
     public RssUrl(String stringLink, short updateRate) {
         storage = new RSSStorage();
@@ -95,6 +96,14 @@ public class RssUrl implements Runnable {
         this.updateRate = updateRate;
     }
 
+    public String getCsvFilePath() {
+        return csvFilePath;
+    }
+
+    public void setCsvFilePath(String csvFilePath) {
+        this.csvFilePath = csvFilePath;
+    }
+
     @Override
     public void run() {
         if (isValid) {
@@ -102,6 +111,7 @@ public class RssUrl implements Runnable {
         }
         if (isValid) {
             storage.saveFile();
+            csvFilePath = storage.getCsvFilePath();
         } else {
             Logger.get().addMessage("Error: rss is invalid");
             StatisticController.get().incrementErrorsOccurredField();

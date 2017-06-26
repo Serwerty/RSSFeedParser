@@ -66,6 +66,7 @@ public class RSSListController {
             ScheduleController.get().deleteAt(rssArrayList.get(id).getIdInTaskList());
             int idInList = ScheduleController.get().addToSchedule(rssUrl, rssUrl.getUpdateRate());
             rssUrl.setIdInTaskList(idInList);
+            rssUrl.setCsvFilePath(rssArrayList.get(id).getCsvFilePath());
             rssArrayList.set(id, rssUrl);
             String ternaryLine = rssUrl.getUrl() != null ? rssUrl.getUrl().toString() : rssUrl.getStringLink();
             Logger.get().addMessage("Rss Link was edited " + ternaryLine);
