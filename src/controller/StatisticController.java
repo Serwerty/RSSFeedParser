@@ -12,6 +12,7 @@ public class StatisticController {
     private int errorsOccurred;
     private long startTime;
     private long currentTime;
+
     private StatisticController() {
     }
 

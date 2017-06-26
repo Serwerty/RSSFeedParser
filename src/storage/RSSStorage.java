@@ -35,6 +35,7 @@ public class RSSStorage {
     private String rssSource;
     private String rssLink;
     private String csvFilePath;
+
     public RSSStorage() {
         initStorage();
     }

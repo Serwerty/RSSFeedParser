@@ -32,13 +32,13 @@ public class CSVParser {
                 while ((readLine = br.readLine()) != null) {
                     String[] words = readLine.split("\t");
                     Item item = new Item();
-                    item.setTitle(words[0].substring(1, words[0].length()-1));
-                    item.setPubDate(words[1].substring(1, words[1].length()-1));
-                    item.setAuthor(words[2].substring(1, words[2].length()-1));
-                    item.setLastUpdateDate(words[3].substring(1, words[3].length()-1));
-                    item.setDescription(words[4].substring(1, words[4].length()-1));
-                    item.setCategory(words[5].substring(1, words[5].length()-1));
-                    item.setLink(words[6].substring(1, words[6].length()-1));
+                    item.setTitle(words[0].substring(1, words[0].length() - 1));
+                    item.setPubDate(words[1].substring(1, words[1].length() - 1));
+                    item.setAuthor(words[2].substring(1, words[2].length() - 1));
+                    item.setLastUpdateDate(words[3].substring(1, words[3].length() - 1));
+                    item.setDescription(words[4].substring(1, words[4].length() - 1));
+                    item.setCategory(words[5].substring(1, words[5].length() - 1));
+                    item.setLink(words[6].substring(1, words[6].length() - 1));
                     items.add(item);
                 }
                 br.close();

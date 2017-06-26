@@ -1,7 +1,5 @@
 package util;
 
-import java.util.*;
-
 import constants.EmailConstants;
 import constants.EmailType;
 import controller.ConfigController;
@@ -15,8 +13,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import java.util.Date;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -47,68 +44,68 @@ public class EmailSender {
         return instance;
     }
 
-    public void sendEmail (EmailType emailType, String text, String[] attachments)
-    {
-        props.put(EmailConstants.KEY_HOST, EmailConstants.VAL_HOST);
-        props.put(EmailConstants.KEY_PORT, EmailConstants.VAL_PORT);
-        props.put(EmailConstants.KEY_SSL, true);
-        props.put(EmailConstants.KEY_AUTH, true);
+    public void sendEmail(EmailType emailType, String text, String[] attachments) {
+        if (ConfigController.get().isSendEmail()) {
+            props.put(EmailConstants.KEY_HOST, EmailConstants.VAL_HOST);
+            props.put(EmailConstants.KEY_PORT, EmailConstants.VAL_PORT);
+            props.put(EmailConstants.KEY_SSL, true);
+            props.put(EmailConstants.KEY_AUTH, true);
 
-        Session session = Session.getInstance(props, authenticator);
-        //session.setDebug(debug);
+            Session session = Session.getInstance(props, authenticator);
+            //session.setDebug(debug);
 
-        Message message = new MimeMessage(session);
-        try {
-            InternetAddress[] address = {new InternetAddress(ConfigController.get().getRecipientEmail())};
-            message.setRecipients(Message.RecipientType.TO, address);
-            switch (emailType) {
-                case Error:
-                    message.setSubject(EmailConstants.ERROR_SUBJECT);
-                    break;
-                case Statistics:
-                    message.setSubject(EmailConstants.STATISTICS_SUBJECT);
-                    break;
-                default:
-                    message.setSubject(EmailConstants.DEFAULT_SUBJECT);
-                    break;
-            }
-            message.setSentDate(new Date());
-            if (attachments.length > 0) {
-                // https://www.tutorialspoint.com/javamail_api/javamail_api_send_email_with_attachment.htm
-                BodyPart messageBodyPart = new MimeBodyPart();
-                messageBodyPart.setText(text);
-                Multipart multipart = new MimeMultipart();
-                multipart.addBodyPart(messageBodyPart);
-
-                for (String filePath : attachments) {
-                    messageBodyPart = new MimeBodyPart();
-                    String filename = filePath;
-                    DataSource source = new FileDataSource(filename);
-                    messageBodyPart.setDataHandler(new DataHandler(source));
-                    messageBodyPart.setFileName(filename);
-                    multipart.addBodyPart(messageBodyPart);
+            Message message = new MimeMessage(session);
+            try {
+                InternetAddress[] address = {new InternetAddress(ConfigController.get().getRecipientEmail())};
+                message.setRecipients(Message.RecipientType.TO, address);
+                switch (emailType) {
+                    case Error:
+                        message.setSubject(EmailConstants.ERROR_SUBJECT);
+                        break;
+                    case Statistics:
+                        message.setSubject(EmailConstants.STATISTICS_SUBJECT);
+                        break;
+                    default:
+                        message.setSubject(EmailConstants.DEFAULT_SUBJECT);
+                        break;
                 }
-                message.setContent(multipart);
-            } else {
-                message.setText(text);
-            }
+                message.setSentDate(new Date());
+                if (attachments.length > 0) {
+                    // https://www.tutorialspoint.com/javamail_api/javamail_api_send_email_with_attachment.htm
+                    BodyPart messageBodyPart = new MimeBodyPart();
+                    messageBodyPart.setText(text);
+                    Multipart multipart = new MimeMultipart();
+                    multipart.addBodyPart(messageBodyPart);
 
-            Transport.send(message);
-            Logger.get().addMessage(String.format("EMAIL INFO: Email of type \"%s\"" +
-                    " was sent to %s.", emailType.toString(), address[0].toString()));
-        } catch (MessagingException e) {
-            Logger.get().addMessage("EMAIL ERROR: Error while sending email.");
-            throw new RuntimeException(e);
+                    for (String filePath : attachments) {
+                        messageBodyPart = new MimeBodyPart();
+                        String filename = filePath;
+                        DataSource source = new FileDataSource(filename);
+                        messageBodyPart.setDataHandler(new DataHandler(source));
+                        messageBodyPart.setFileName(filename);
+                        multipart.addBodyPart(messageBodyPart);
+                    }
+                    message.setContent(multipart);
+                } else {
+                    message.setText(text);
+                }
+
+                Transport.send(message);
+                Logger.get().addMessage(String.format("EMAIL INFO: Email of type \"%s\"" +
+                        " was sent to %s.", emailType.toString(), address[0].toString()));
+            } catch (MessagingException e) {
+                Logger.get().addMessage("EMAIL ERROR: Error while sending email.");
+                throw new RuntimeException(e);
+            }
         }
     }
 
-    public void sendEmail(EmailType emailType, String text)
-    {
+    public void sendEmail(EmailType emailType, String text) {
         String[] attachments = {};
         sendEmail(emailType, text, attachments);
     }
 
-    public void sendEmail(EmailType emailType, String text, String pathToFile){
+    public void sendEmail(EmailType emailType, String text, String pathToFile) {
         String[] attachments = {pathToFile};
         sendEmail(emailType, text, attachments);
     }
@@ -128,23 +125,20 @@ public class EmailSender {
         return bodyText;
     }
 
-    public void sendStatistics()
-    {
+    public void sendStatistics() {
         Logger.get().exportLog();
         String logfileName = Logger.get().getLogFileName();
         String bodyText = EmailSender.get().createStatisticsBodyText();
         sendEmail(EmailType.Statistics, bodyText, logfileName);
     }
 
-    public void initDailyTimer()
-    {
+    public void initDailyTimer() {
         //https://stackoverflow.com/questions/9375882/how-i-can-run-my-timertask-everyday-2-pm
         Calendar date = Calendar.getInstance();
         date.set(Calendar.HOUR_OF_DAY, ConfigController.get().getDailyHours());
         date.set(Calendar.MINUTE, ConfigController.get().getDailyMinutes());
 
-        if(date.before(Calendar.getInstance()))
-        {
+        if (date.before(Calendar.getInstance())) {
             date.add(Calendar.DAY_OF_WEEK, 1);
         }
 

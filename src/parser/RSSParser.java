@@ -20,7 +20,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -88,7 +87,7 @@ public class RSSParser {
         }
     }
 
-    private void checkCSVLink(RssUrl rssUrl){
+    private void checkCSVLink(RssUrl rssUrl) {
         Date dateNow = new Date();
 
         SimpleDateFormat yearFormatter = new SimpleDateFormat("yyyy");
@@ -122,10 +121,10 @@ public class RSSParser {
 
             boolean contains = false;
             for (Item itemToCheck : items) {
-                if (itemToCheck.getTitle().equals(item.getTitle())){
+                if (itemToCheck.getTitle().equals(item.getTitle())) {
                     contains = true;
-                    if (!items.contains(item)){
-                        items.set(items.indexOf(itemToCheck),item);
+                    if (!items.contains(item)) {
+                        items.set(items.indexOf(itemToCheck), item);
                     }
                 }
             }
